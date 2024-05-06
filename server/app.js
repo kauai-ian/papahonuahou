@@ -6,6 +6,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
+//todo routers import
 
 const port = process.env.PORT || 3000;
 
@@ -29,7 +30,7 @@ app.use(cors())
 app.set("port",port)
 
 // main user dashboard GET
-
+// TODO
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
