@@ -2,11 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-  type: { type: String, required: true }, // meal, sleep start, sleep end, nap start, nap end
+  eventType: { type: String, required: true }, // meal, sleep start, sleep end, nap start, nap end
   notes: {
     type: String,
   },
-  eventTime: {
+  eventStart: {
+    // editable later
+    type: Date,
+    default: Date.now,
+  },
+  eventEnd: {
     // editable later
     type: Date,
     default: Date.now,
