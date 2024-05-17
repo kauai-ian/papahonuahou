@@ -10,32 +10,62 @@ exports.createEvent = async (req, res) => {
       statusCode = 400;
       throw new Error("request body is missing");
     }
-    const { body, _id } = req.body;
-    if (!body || !_id) {
+    const { eventType, notes, eventStart, eventEnd, _id } = req.body;
+    if (!eventType || !_id) {
       statusCode = 400;
       throw new Error("Missing required fields");
     }
 
-    // ensure day exists
     const day = await Day.findById(_id);
+    let newDay;
+
     if (!day) {
-      // create new day of none exists
-      const newDay = new Day({ events: [], dayStart: new Date() });
+      newDay = new Day({ events: [], dayStart: new Date() });
       await newDay.save();
       console.log("New day created:", newDay);
+
+      const newEvent = new Event({
+        eventType,
+        notes,
+        eventStart,
+        eventEnd,
+        dayId: newDay._id,
+      });
+      await newEvent.save();
+      console.log("new event created:", newEvent);
+
+      newDay.events.push(newEvent._id);
+      await newDay.save();
+
+      await exports.updateStatistics(newDay._id);
+
+      return response({
+        res,
+        status: 201,
+        message: "Event created successfully",
+        data: newDay,
+      });
     }
-    // create new event
-    const newEvent = new Event({ eventType, notes, eventStart, eventEnd });
+
+    const newEvent = new Event({
+      eventType,
+      notes,
+      eventStart,
+      eventEnd,
+      dayId: day._id,
+    });
     await newEvent.save();
     console.log("new event created:", newEvent);
 
-    // TODO: after event creation, call stats helper function, return updated to current day in stats.
+    day.events.push(newEvent._id);
+    await day.save();
 
+    await updateStatistics(day._id);
     return response({
       res,
       status: 201,
       message: "Event created successfully",
-      data: day ? day : newDay, // return existing day or newly created day
+      data: day,
     });
   } catch (error) {
     console.error(error);
@@ -94,7 +124,7 @@ exports.editEvent = async (req, res) => {
 exports.deleteEvent = async (req, res) => {
   try {
     const { _id } = req.params;
-    if (_id) {
+    if (!_id) {
       return response({
         res,
         status: 400,
@@ -125,7 +155,6 @@ exports.deleteEvent = async (req, res) => {
     });
   }
 };
-
 
 exports.listDays = async (req, res) => {
   try {
@@ -176,97 +205,136 @@ exports.getDays = async (req, res) => {
 
 exports.getStatistics = async (req, res) => {
   try {
-    const {eventType, eventStart, eventEnd} = req.body
+    const { eventType, eventStart, eventEnd } = req.body;
     const events = await Event.find({
-      eventType, eventTime: { $gte: eventStart, $lte: eventEnd }
-    })
+      eventType,
+      eventTime: { $gte: eventStart, $lte: eventEnd },
+    });
 
-// initialize variables
-let totalEvents = 0;
-let totalTime = 0
-let totalSleepTime = 0
-let totalSleepEvents = 0;
-let totalNapTime = 0
-let totalNapEvents = 0;
-let totalMealEvents = 0;
-let averageSleepTime = 0
-let averageNapTime= 0
+    let totalEvents = 0;
+    let totalSleepTime = 0;
+    let totalSleepEvents = 0;
+    let totalNapTime = 0;
+    let totalNapEvents = 0;
+    let totalMealEvents = 0;
+    let averageSleepTime = 0;
+    let averageNapTime = 0;
 
-// get all events of the given event type within a specific range
+    events.forEach((event) => {
+      if (
+        eventType !== "sleep" &&
+        eventType !== "nap" &&
+        eventType !== "meal"
+      ) {
+        return response({
+          res,
+          status: 400,
+          message: "missing required fields",
+        });
+      }
+      if ((eventType = "sleep")) {
+        const sleepDuration =
+          (event.eventEnd - event.eventStart) / (1000 * 60 * 60);
+        totalSleepTime += sleepDuration;
+        totalSleepEvents++;
+      } else if ((eventType = "nap")) {
+        const napDuration =
+          (event.eventEnd - event.eventStart) / (1000 * 60 * 60);
+        totalNapTime += napDuration;
+        totalNapEvents++;
+      } else if ((eventType = "meal")) {
+        totalMealEvents++;
+      }
+    });
 
-// loop through each event:
-events.forEach(event => {
-  if (eventType !== "sleep" && eventType !== "nap" && eventType !== "meal") {return response({
-    res,
-    status: 400,
-    message: "missing required fields",
-  })
+    if (totalSleepEvents > 0) {
+      averageSleepTime = totalSleepTime / totalSleepEvents;
+    }
+    if (totalNapEvents > 0) {
+      averageNapTime = totalNapTime / totalNapEvents;
+    }
+
+    const data = {
+      totalEvents,
+      totalSleepTime,
+      totalSleepEvents,
+      totalNapTime,
+      totalNapEvents,
+      totalMealEvents,
+      averageSleepTime,
+      averageNapTime,
+    };
+
+    return response({
+      res,
+      status: 200,
+      message: "Statistics retrieved successfully",
+      data: { data }, // needs to be an object to access the properties
+    });
+  } catch (error) {
+    console.error(error);
+    return response({
+      res,
+      status: 500,
+      message: "An error occurred while fetching statistics",
+      error: error.message,
+    });
+  }
 };
-  if (eventType = "sleep") {
-    // create a variable called sleep duration
-    const sleepDuration = (event.eventEnd - event.eventStart) / (1000 * 60 * 60) // convert milliseconds to hours
-    //  calculate the sleep duration. by subtracting the eventStart from the eventEnd in hours
-    totalSleepTime += sleepDuration
-    // example sleep event starts at 7 P.M. and sleep event ends at 7 A.M.. The result is 12 hours.
-    // increment total sleep events by 1
-    totalSleepEvents++;
-  }  
-  else if (eventType = "nap") {
-    // create a variable called nap duration
-    const napDuration = (event.eventEnd - event.eventStart) / (1000 * 60 * 60)
-    //  calculate the nap duration by subtracting the eventStart from the eventEnd in hours. 
-    totalNapTime += napDuration
-    // example nap event starts at 10 A.M. and ends at 11 A.M.
-    // increment total nap events by 1
-    totalNapEvents++;
-  }
- else if (eventType = "meal") {
-    // create a variable called total meals
-    // increment total meals events by 1
-    totalMealEvents++
-  }
 
-})
+exports.updateStatistics = async (dayId) => {
+  try {
+    const day = await Day.findById(dayId).populate("events");
+    if (!day) {
+      throw new Error("Day not found");
+    }
 
-if (totalEvents > 0) {
-  averageSleepTime = totalSleepTime / totalSleepEvents
-averageNapTime = totalNapTime / totalNapEvents 
-}
+    let totalSleepTime = 0;
+    let totalSleepEvents = 0;
+    let totalNapTime = 0;
+    let totalNapEvents = 0;
+    let totalMealEvents = 0;
 
-return response({
-  res, status: 200, message: "Statistics retrieved successfully", data: { data } // needs to be an object to access the properties 
-})
-
-
-  }
-  catch (error){
-    console.error(error);
-    return response({
-        res, status: 500,
-        message: "An error occurred while fetching statistics",
-        error: error.message
+    day.events.forEach((event) => {
+      const { eventType, eventStart, eventEnd } = event;
+      if (
+        eventType !== "sleep" &&
+        eventType !== "nap" &&
+        eventType !== "meal"
+      ) {
+        return response({
+          res,
+          status: 400,
+          message: "missing required fields",
+        });
+      }
+      if (eventType === "sleep") {
+        const sleepDuration =
+          (new Date(eventEnd) - new Date(eventStart)) / (1000 * 60 * 60);
+        totalSleepTime += sleepDuration;
+        totalSleepEvents++;
+      } else if (eventType === "nap") {
+        const napDuration =
+          (new Date(eventEnd) - new Date(eventStart)) / (1000 * 60 * 60);
+        totalNapTime += napDuration;
+        totalNapEvents++;
+      } else if (eventType === "meal") {
+        totalMealEvents++;
+      }
     });
-  }
-}
 
-// helper function runs on each event creation and returns stats updated.  
-exports.updateStatistics = async (req, res) => {
-  try{
-// calcualte the time for the specific event type (bed time, wake time, meal time)
+    // Update day statistics
+    day.totalSleepTime = totalSleepTime;
+    day.totalSleepEvents = totalSleepEvents;
+    day.totalNapTime = totalNapTime;
+    day.totalNapEvents = totalNapEvents;
+    day.totalMealEvents = totalMealEvents;
 
-// update the statistics for the speicific event type based on the calculated time:
-// add the time to the total time
-// Increment the total number of events 
-
-// save the updated statistics
-
-  }
-  catch (error){
+    day.save();
+    console.log("statistics updated successfully");
+    return day;
+  } catch (error) {
     console.error(error);
-    return response({
-        res, status: 500,
-        message: "An error occurred while updating statistics",
-        error: error.message
-    });
+    throw new Error("An error occurred while updating statistics");
   }
-}
+};

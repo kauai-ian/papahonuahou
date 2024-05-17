@@ -20,6 +20,22 @@ const DaySchema = new Schema({
     type: Date,
     default: GetTodayMidnight,
   },
+  totalSleepTime: {
+    type: Number, default: 0 // in hours
+  },
+  totalSleepEvents: {
+    type: Number, default: 0
+  },
+  totalNapTime: {
+    type: Number, default: 0 // in hours
+  },
+  totalNapEvents: {
+    type: Number, default: 0
+  },
+  totalMealEvents: {
+    type: Number, default: 0
+  },
+  
 });
 
 module.exports = mongoose.model("Day", DaySchema);

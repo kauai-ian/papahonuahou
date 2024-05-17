@@ -16,6 +16,11 @@ const EventSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  dayId: {
+    type: Schema.Types.ObjectId,
+    ref: "Day",
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Event", EventSchema);
