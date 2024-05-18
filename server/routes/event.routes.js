@@ -5,11 +5,11 @@ const eventController = require("../controllers/event.controller");
 const dayController = require("../controllers/day.controller")
 
 router.post("/events", eventController.createEvent);
-router.put("/events/:id", eventController.editEvent);
-router.delete("/events/:id", eventController.deleteEvent);
-router.get("/events/statistics", eventController.getStatistics);
+router.put("/events/:_id", eventController.editEvent);
+router.delete("/events/:_id", eventController.deleteEvent);
+router.post("/events/statistics", eventController.getStatistics);
 
 router.get("/days", dayController.listDays);
-router.get("/days/:id", dayController.getDays);
+router.get("/days/:_id", dayController.getDay);
 
 module.exports = router;

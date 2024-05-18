@@ -25,6 +25,7 @@ exports.createEvent = async (req, res) => {
     }
 
     const newEvent = new Event({
+      _id,
       eventType,
       notes,
       eventStart,
@@ -58,10 +59,10 @@ exports.createEvent = async (req, res) => {
 exports.editEvent = async (req, res) => {
   let statusCode = 200;
   try {
-    const { id } = req.params;
+    const { _id } = req.params;
     const { eventType, notes, eventStart, eventEnd } = req.body;
     console.log(req.body);
-    if (!id || !eventType || !notes || !eventStart || !eventEnd) {
+    if (!_id || !eventType || !notes || !eventStart || !eventEnd) {
       return response({
         res,
         status: 400,
@@ -69,7 +70,7 @@ exports.editEvent = async (req, res) => {
       });
     }
 
-    const event = await Event.findById(id);
+    const event = await Event.findById(_id);
     if (!event) {
       return response({
         res,
@@ -78,17 +79,45 @@ exports.editEvent = async (req, res) => {
       });
     }
 
-    const updatedEvent = await Event.findByIdAndUpdate(
-      id,
-      { eventType, notes, eventStart, eventEnd },
-      { new: true }
+    const originalDay = await Day.findById(event.dayId);
+    const newDayStart = getMidnightDate(eventStart);
+
+    //if event start date has changed, update the associated day
+    if (originalDay.dayStart.getTime() !== newDayStart.getTime()) {
+      const newDay =
+        (await Day.findOne({ dayStart: newDayStart })) ||
+        new Day({ dayStart: newDayStart, events: [] });
+    
+    // remove id from original days events array
+    originalDay.events = originalDay.events.filter(
+      (eventId) => eventId.toString() !== _id
     );
+    await originalDay.save();
+    //add event id to new days events array
+    newDay.events.push(_id);
+    await newDay.save();
+
+    //update events day id
+    event.dayId = newDay._id;
+  }
+    //update event details
+    event.eventType = eventType;
+    event.notes = notes;
+    event.eventStart = eventStart;
+    event.eventEnd = eventEnd;
+    await event.save();
+
+    //update statistics
+    await exports.updateStatistics(originalDay._id);
+    if (originalDay.dayStart.getTime() !== newDayStart.getTime()) {
+      await exports.updateStatistics(event.dayId);
+    }
 
     return response({
       res,
       status: 200,
       message: "event updated",
-      data: updatedEvent,
+      data: event,
     });
   } catch (error) {
     console.error(error);
@@ -102,8 +131,8 @@ exports.editEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    const { _id } = req.params;
+    if (!_id) {
       return response({
         res,
         status: 400,
@@ -111,7 +140,7 @@ exports.deleteEvent = async (req, res) => {
       });
     }
 
-    const event = await Event.findByIdAndDelete(id);
+    const event = await Event.findByIdAndDelete(_id);
     if (!event) {
       return response({
         res,
@@ -120,10 +149,26 @@ exports.deleteEvent = async (req, res) => {
       });
     }
 
+    const day = await Day.findById(event.dayId);
+    if (!day) {
+      return response({
+        res,
+        status: 404,
+        message: "Associated day not found",
+      });
+    }
+
+    day.events = day.events.filter((eventId) => eventId.toString() !== _id);
+    await day.save();
+
+    await Event.findByIdAndDelete(_id);
+
+    await exports.updateStatistics(day._id);
+
     return response({
       res,
       status: 200,
-      message: "Event deleted",
+      message: "Event deleted and removed from day",
     });
   } catch (error) {
     console.error(error);

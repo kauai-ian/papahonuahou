@@ -21,10 +21,10 @@ exports.listDays = async (req, res) => {
     }
   };
   
-  exports.getDays = async (req, res) => {
+  exports.getDay = async (req, res) => {
     try {
-      const { id } = req.params;
-      if (!id) {
+      const { _id } = req.params;
+      if (!_id) {
         return response({
           res,
           status: 400,
@@ -32,7 +32,7 @@ exports.listDays = async (req, res) => {
         });
       }
   
-      const day = await Day.findById(id);
+      const day = await Day.findById(_id);
       return response({
         res,
         status: 200,
