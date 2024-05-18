@@ -1,12 +1,7 @@
 const Event = require("../models/Event");
 const Day = require("../models/Day");
 const response = require("../helpers/response");
-
-const getMidnightDate = (date) => {
-  let midnight = new Date(date);
-  midnight.setHours(0, 0, 0, 0);
-  return midnight;
-};
+const getMidnightDate = require("../helpers/getMidnight");
 
 exports.createEvent = async (req, res) => {
   let statusCode = 200;
@@ -25,7 +20,7 @@ exports.createEvent = async (req, res) => {
 
     if (!day) {
       day = new Day({ events: [], dayStart: eventDateMidnight });
-      await day.save(); 
+      await day.save();
       console.log("New day created:", day);
     }
 
@@ -34,12 +29,12 @@ exports.createEvent = async (req, res) => {
       notes,
       eventStart,
       eventEnd,
-      dayId: day._id, 
+      dayId: day._id,
     });
     await newEvent.save();
     console.log("new event created:", newEvent);
 
-    day.events.push(newEvent._id); 
+    day.events.push(newEvent._id);
     await day.save();
 
     await exports.updateStatistics(day._id);
@@ -65,7 +60,7 @@ exports.editEvent = async (req, res) => {
   try {
     const { id } = req.params;
     const { eventType, notes, eventStart, eventEnd } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     if (!id || !eventType || !notes || !eventStart || !eventEnd) {
       return response({
         res,
@@ -140,13 +135,11 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
-
-
 exports.getStatistics = async (req, res) => {
   try {
     const { eventType, eventStart, eventEnd } = req.body;
 
-    if (!['sleep', 'nap', 'meal'].includes(eventType)) {
+    if (!["sleep", "nap", "meal"].includes(eventType)) {
       return response({
         res,
         status: 400,
@@ -171,11 +164,11 @@ exports.getStatistics = async (req, res) => {
     console.log({
       eventType: eventType,
       eventStart: { $gte: new Date(eventStart) },
-      eventEnd: { $lte: new Date(eventEnd) }
+      eventEnd: { $lte: new Date(eventEnd) },
     });
 
     events.forEach((event) => {
-      totalEvents++; 
+      totalEvents++;
       if (
         eventType !== "sleep" &&
         eventType !== "nap" &&
@@ -187,17 +180,17 @@ exports.getStatistics = async (req, res) => {
           message: "missing required fields",
         });
       }
-      if ((eventType === "sleep")) {
+      if (eventType === "sleep") {
         const sleepDuration =
           (event.eventEnd - event.eventStart) / (1000 * 60 * 60);
         totalSleepTime += sleepDuration;
         totalSleepEvents++;
-      } else if ((eventType === "nap")) {
+      } else if (eventType === "nap") {
         const napDuration =
           (event.eventEnd - event.eventStart) / (1000 * 60 * 60);
         totalNapTime += napDuration;
         totalNapEvents++;
-      } else if ((eventType === "meal")) {
+      } else if (eventType === "meal") {
         totalMealEvents++;
       }
     });
@@ -224,7 +217,7 @@ exports.getStatistics = async (req, res) => {
       res,
       status: 200,
       message: "Statistics retrieved successfully",
-      data: data , // might need to be an object to access the properties 
+      data: data, // might need to be an object to access the properties
     });
   } catch (error) {
     console.error(error);
@@ -252,8 +245,7 @@ exports.updateStatistics = async (dayId) => {
 
     day.events.forEach((event) => {
       const { eventType, eventStart, eventEnd } = event;
-      if ( ! ['sleep', 'nap', 'meal'].includes(eventType))
-         {
+      if (!["sleep", "nap", "meal"].includes(eventType)) {
         return response({
           res,
           status: 400,

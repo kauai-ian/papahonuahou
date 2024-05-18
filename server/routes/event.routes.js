@@ -9,7 +9,7 @@ router.put("/events/:id", eventController.editEvent);
 router.delete("/events/:id", eventController.deleteEvent);
 router.get("/events/statistics", eventController.getStatistics);
 
-router.get("/day", dayController.listDays);
-router.get("/day", dayController.getDays);
+router.get("/days", dayController.listDays);
+router.get("/days/:id", dayController.getDays);
 
 module.exports = router;
