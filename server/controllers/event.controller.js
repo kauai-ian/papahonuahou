@@ -56,6 +56,43 @@ exports.createEvent = async (req, res) => {
   }
 };
 
+exports.getEvent = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    if (!_id) {
+      return response({
+        res,
+        status: 400,
+        message: "Missing required fields",
+      });
+    }
+
+    const event = await Event.findById(_id);
+    if (!event) {
+      return response({
+        res,
+        status: 404,
+        message: "Event not found",
+      });
+    }
+
+    return response({
+      res,
+      status: 200,
+      message: "Event retrieved successfully",
+      data: event,
+    });
+  } catch (error) {
+    console.error(error);
+    return response({
+      res,
+      status: 500,
+      message: "Server error",
+    });
+  }
+};
+
+
 exports.editEvent = async (req, res) => {
   let statusCode = 200;
   try {
