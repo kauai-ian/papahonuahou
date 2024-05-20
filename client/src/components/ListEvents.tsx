@@ -22,7 +22,8 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
         const eventDetails = await Promise.all(
           eventIds.map((eventId) => getEvent(eventId))
         );
-        setEvents(eventDetails);
+        setEvents(eventDetails.map((detail) => detail.data));
+        console.log("eventdetails",eventDetails)
       } catch (error) {
         setError("Error fetching event details");
       } finally {

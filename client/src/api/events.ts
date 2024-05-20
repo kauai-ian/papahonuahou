@@ -9,7 +9,6 @@ type EditEventData = EventProps;
 
 export const getEvent = async (_id: string) => {
     const response = await axios.get(`${ROOT}/${_id}`);
-    
     return response.data;
 };
 

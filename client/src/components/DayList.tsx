@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { DayDetailsDropdown } from "./DayDetails";
-import { EventProps } from "./EventForm";
 import {
   Box,
   SimpleGrid,
@@ -11,11 +10,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { listDays } from "../api/days";
+import { formatDate } from "../utils/date";
 
 export type DayProps = {
   _id: string;
-  date: string;
-  events: EventProps[];
+  dayStart: string;
+  events: string[];
 };
 // fetch the list of events from backend using useEffect hook. Display loading message. Render list of events with buttons to edit
 
@@ -30,7 +30,9 @@ const DayList = () => {
     const fetchData = async () => {
       try {
         const response = await listDays();
-        setDays(response.data);
+        const sortedDays = response.data.sort((a: DayProps, b: DayProps) => 
+        new Date(a.dayStart).getTime() - new Date(b.dayStart).getTime())
+        setDays(sortedDays);
       } catch (error) {
         setError("error fetching days");
       } finally {
@@ -60,21 +62,20 @@ const DayList = () => {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
-          {Array.isArray(days) &&
-            days.map((day) => (
-              <Box
-                key={day._id}
-                p={3}
-                borderRadius="lg"
-                borderWidth="1px"
-                cursor="pointer"
-                _hover={{ bg: "gray.100" }}
-                onClick={() => handleDayClick(day)}
-              >
-                <Text fontSize="lg">{day.date}</Text>
-              </Box>
-            ))}
+        <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={6}>
+          {days.map((day) => (
+            <Box
+              key={day._id}
+              p={4}
+              borderRadius="lg"
+              borderWidth="1px"
+              cursor="pointer"
+              _hover={{ bg: "gray.100" }}
+              onClick={() => handleDayClick(day)}
+            >
+              <Text fontSize="lg">{formatDate(day.dayStart, 'MM/DD')}</Text>
+            </Box>
+          ))}
         </SimpleGrid>
       )}
 

@@ -25,17 +25,17 @@ return dayjs(date).startOf('day').toDate()
 }
 
 // Example usage
-const formattedDate = formatDate('5/4/2024', 'YYYY-MM-DD HH:mm:ss');
-console.log(formattedDate); 
+// const formattedDate = formatDate('5/4/2024', 'YYYY-MM-DD HH:mm:ss');
+// console.log(formattedDate); 
 
-const parsedDate = parseDate('2023-05-17 14:30:00', 'YYYY-MM-DD HH:mm:ss');
-console.log(parsedDate); 
+// const parsedDate = parseDate('2023-05-17 14:30:00', 'YYYY-MM-DD HH:mm:ss');
+// console.log(parsedDate); 
 
-const dateDiff = calcDateDiff('2023-05-17', '2023-06-17');
-console.log(dateDiff); // 31
+// const dateDiff = calcDateDiff('2023-05-17', '2023-06-17');
+// console.log(dateDiff); // 31
 
-const newDate = addDays(new Date(), 5);
-console.log(newDate); // Date object 5 days from today
+// const newDate = addDays(new Date(), 5);
+// console.log(newDate); // Date object 5 days from today
 
-const midnightDate = getMidnight(new Date());
-console.log(midnightDate); // Date object set to midnight of the current day
+// const midnightDate = getMidnight(new Date());
+// console.log(midnightDate); // Date object set to midnight of the current day
