@@ -18,23 +18,40 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+      setError(null) // reset error
       try {
+        if (eventIds.length === 0) {
+          setEvents([]);
+          return;
+        }
         const eventDetails = await Promise.all(
-          eventIds.map((eventId) => getEvent(eventId))
+          eventIds.map((eventId) =>
+            getEvent(eventId).catch((error) => {
+              console.error(`Error fetching event with id ${eventId}`, error);
+              return null;
+            })
+          )
         );
-        setEvents(eventDetails.map((detail) => detail.data));
-        console.log("eventdetails",eventDetails)
+        // filter null responses
+        const validEventDetails = eventDetails.filter(
+          (detail): detail is { data: EventProps } => detail !== null
+        );
+
+        if (validEventDetails.length === 0) {
+          setEvents([]);
+          setError("No Events to display");
+        } else {
+          setEvents(validEventDetails.map((detail) => detail.data));
+        }
+        console.log("eventdetails", eventDetails);
+        // TODO: figure out why fetching event details is not working
       } catch (error) {
         setError("Error fetching event details");
       } finally {
         setLoading(false);
       }
     };
-    if (eventIds.length > 0) {
-      fetchEvents();
-    } else {
-      setEvents([]);
-    }
+    fetchEvents();
   }, [eventIds]);
 
   return (
@@ -43,6 +60,8 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
         <Spinner />
       ) : error ? (
         <p>{error}</p>
+      ) : events.length === 0 ? (
+        <p>No events to display.</p>
       ) : (
         <ul>
           {events.map((event) => (

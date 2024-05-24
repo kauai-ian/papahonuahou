@@ -51,7 +51,7 @@ const DayList = () => {
     setSelectedDay(null);
     onClose();
   };
-  console.log(days);
+  console.log(selectedDay);
   return (
     <Box p={4}>
       <Text fontSize="lg" mb={4}>

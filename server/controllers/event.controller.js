@@ -2,6 +2,7 @@ const Event = require("../models/Event");
 const Day = require("../models/Day");
 const response = require("../helpers/response");
 const getMidnightDate = require("../helpers/getMidnight");
+const { cleanupDayEvents } = require("../helpers/cleanupDayEvents");
 
 exports.createEvent = async (req, res) => {
   let statusCode = 200;
@@ -75,7 +76,6 @@ exports.getEvent = async (req, res) => {
         message: "Event not found",
       });
     }
-
     return response({
       res,
       status: 200,
@@ -199,6 +199,8 @@ exports.deleteEvent = async (req, res) => {
     await day.save();
 
     await Event.findByIdAndDelete(_id);
+
+    await cleanupDayEvents();
 
     await exports.updateStatistics(day._id);
 
