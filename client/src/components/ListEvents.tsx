@@ -1,9 +1,18 @@
-// maps over a list of event ids from the dayList and returns a list
+
 
 import { useEffect, useState } from "react";
-import { EventProps } from "./EventForm";
-import { getEvent } from "../api/events";
-import { Spinner } from "@chakra-ui/react";
+import { deleteEvent, getEvent, editEvent } from "../api/events";
+import EventForm, { EventProps } from "./EventForm";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Spinner,
+} from "@chakra-ui/react";
 
 type ListEventProps = {
   eventIds: string[];
@@ -13,12 +22,15 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
   const [events, setEvents] = useState<EventProps[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingEventData, setEditingEventData] = useState<EventProps | null>(
+    null
+  );
 
-  // useeffect to fetch events from the ids given.
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
-      setError(null) // reset error
+      setError(null);
       try {
         if (eventIds.length === 0) {
           setEvents([]);
@@ -32,7 +44,6 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
             })
           )
         );
-        // filter null responses
         const validEventDetails = eventDetails.filter(
           (detail): detail is { data: EventProps } => detail !== null
         );
@@ -44,7 +55,6 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
           setEvents(validEventDetails.map((detail) => detail.data));
         }
         console.log("eventdetails", eventDetails);
-        // TODO: figure out why fetching event details is not working
       } catch (error) {
         setError("Error fetching event details");
       } finally {
@@ -53,6 +63,46 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
     };
     fetchEvents();
   }, [eventIds]);
+
+  // TODO: delete handler
+  const handleDelete = async (eventId: string) => {
+    try {
+      await deleteEvent(eventId);
+      setEvents((prevEvents) =>
+        prevEvents.filter((event) => event._id !== eventId)
+      );
+    } catch (error) {
+      console.error("Failed to delete event:", error);
+    }
+  };
+
+  // TODO:  the edit mode
+  const handleEdit = async (eventId: string) => {
+    try {
+      const response = await getEvent(eventId);
+      if (response && response.data) {
+        setEditingEventData(response.data);
+        setIsEditMode(true);
+      }
+    } catch (error) {
+      console.error("Failed to fetch event for editing:", error);
+    }
+  };
+
+  const handleEditSubmit = async (updatedEvent: EventProps) => {
+    try {
+      await editEvent(updatedEvent._id, updatedEvent);
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event._id === updatedEvent._id ? updatedEvent : event
+        )
+      );
+      setIsEditMode(false);
+      setEditingEventData(null);
+    } catch (error) {
+      console.error("Failed to update event", error);
+    }
+  };
 
   return (
     <>
@@ -70,10 +120,29 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
               <p>Notes: {event.notes}</p>
               <p>Start Time: {event.eventStart}</p>
               <p>End Time: {event.eventEnd}</p>
+              <Button onClick={() => handleEdit(event._id)}>Edit</Button>
+              <Button onClick={() => handleDelete(event._id)}>Delete</Button>
             </li>
           ))}
         </ul>
       )}
+      <Modal isOpen={isEditMode} onClose={() => setIsEditMode(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Event</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {editingEventData && (
+              <EventForm
+                isEditMode={true}
+                eventData={editingEventData}
+                onClose={() => setIsEditMode(false)}
+                onSubmit={handleEditSubmit}
+              />
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

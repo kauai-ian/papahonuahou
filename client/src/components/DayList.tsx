@@ -1,9 +1,14 @@
 // list all days
 
 import { useEffect, useState } from "react";
-import { DayDetailsDropdown } from "./DayDetails";
 import {
   Box,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   SimpleGrid,
   Spinner,
   Text,
@@ -11,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { listDays } from "../api/days";
 import { formatDate } from "../utils/date";
+import ListEvents from "./ListEvents";
 
 export type DayProps = {
   _id: string;
@@ -80,12 +86,33 @@ const DayList = () => {
       )}
 
       {selectedDay && (
-        <DayDetailsDropdown
-          day={selectedDay}
-          editingEventId={null}
-          onClose={handleCloseDropdown}
-          isOpen={isOpen}
-        />
+
+<Modal isOpen={isOpen} onClose={handleCloseDropdown}>
+<ModalOverlay />
+<ModalContent>
+  <ModalHeader>Day Details</ModalHeader>
+  <ModalCloseButton />
+  <ModalBody>
+    <p>Date: {formatDate(selectedDay.dayStart, "MM/DD/YYYY")}</p>
+    <div>
+      Events:
+      <ListEvents eventIds={selectedDay.events} />
+    </div>
+  </ModalBody>
+</ModalContent>
+</Modal>
+        // <div>
+        // <h2>Day Details</h2>
+        // <p>Date: {formatDate(selectedDay.dayStart, "MM/DD/YYYY")}</p>
+        // <div>
+        //   Events:
+        //   <ListEvents eventIds={selectedDay.events}
+        //   onClose={handleCloseDropdown}
+        //   isOpen={isOpen}
+        //  />
+        // </div>
+          
+  
       )}
     </Box>
   );
