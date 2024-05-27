@@ -3,10 +3,16 @@ import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Days from "./pages/Days";
+import useEvents from "./hooks/useEvents";
+import Loading from "./components/Loading";
+
 
 const App: React.FC = () => {
+  const {isLoading} = useEvents()
   return (
     <>
+    {isLoading ? (<Loading />) : (
+      <>
       <nav>
         <ul>
           <li>
@@ -21,6 +27,8 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/days" element={<Days />} />
       </Routes>
+      </>
+      )}
     </>
   );
 };

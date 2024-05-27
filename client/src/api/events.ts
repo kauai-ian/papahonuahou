@@ -6,6 +6,10 @@ const ROOT = "http://localhost:3000/api/events";
 type CreateEventData = Omit<EventProps, '_id'>;
 type EditEventData = EventProps;
 
+export const listEvents = async() => {
+    const response = await axios.get(`${ROOT}`)
+    return response.data
+}
 
 export const getEvent = async (_id: string) => {
     const response = await axios.get(`${ROOT}/${_id}`);

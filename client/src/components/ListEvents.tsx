@@ -1,7 +1,5 @@
-
-
 import { useEffect, useState } from "react";
-import { deleteEvent, getEvent, editEvent } from "../api/events";
+import { deleteEvent, getEvent, editEvent, createEvent } from "../api/events";
 import EventForm, { EventProps } from "./EventForm";
 import {
   Button,
@@ -26,6 +24,7 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
   const [editingEventData, setEditingEventData] = useState<EventProps | null>(
     null
   );
+  const [isCreateEventModalOpen, setCreateEventModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -104,6 +103,19 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
     }
   };
 
+  const handleCreateEvent = async (newEvent: EventProps) => {
+    try {
+      const {  ...eventData } = newEvent;
+      const createdEvent = await createEvent(eventData);
+      setEvents((prevEvents) => [...prevEvents, createdEvent]);
+      setIsEditMode(false);
+    } catch (error) {
+      console.error("Failed to create event", error);
+    }
+  };
+
+  
+
   return (
     <>
       {isLoading ? (
@@ -126,6 +138,23 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
           ))}
         </ul>
       )}
+      <Button onClick={toggleCreateEventModal}>Create Event</Button>
+      <Modal
+        isOpen={isCreateEventModalOpen}
+        onClose={() => setCreateEventModalOpen(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create Event</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <EventForm
+              onClose={() => setCreateEventModalOpen(false)}
+              onSubmit={handleCreateEvent}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       <Modal isOpen={isEditMode} onClose={() => setIsEditMode(false)}>
         <ModalOverlay />
         <ModalContent>
@@ -137,7 +166,7 @@ const ListEvents: React.FC<ListEventProps> = ({ eventIds }) => {
                 isEditMode={true}
                 eventData={editingEventData}
                 onClose={() => setIsEditMode(false)}
-                onSubmit={handleEditSubmit}
+                onSubmit={isEditMode ? handleEditSubmit : handleCreateEvent}
               />
             )}
           </ModalBody>

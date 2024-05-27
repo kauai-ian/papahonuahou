@@ -1,9 +1,9 @@
-// list all days
+// list all days 
 
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
+  
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,7 +17,8 @@ import {
 } from "@chakra-ui/react";
 import { listDays } from "../api/days";
 import { formatDate } from "../utils/date";
-import ListEvents from "./ListEvents";
+import EventCard from "./EventCard";
+import useEvents from "../hooks/useEvents";
 
 export type DayProps = {
   _id: string;
@@ -30,11 +31,10 @@ const DayList = () => {
   const [days, setDays] = useState<DayProps[]>([]);
   const [selectedDay, setSelectedDay] = useState<DayProps | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLoading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { events, isLoading } = useEvents()
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDays = async () => {
       try {
         const response = await listDays();
         const sortedDays = response.data.sort(
@@ -43,12 +43,10 @@ const DayList = () => {
         );
         setDays(sortedDays);
       } catch (error) {
-        setError("error fetching days");
-      } finally {
-        setLoading(false);
-      }
+        console.error("error fetching days", error);
+      } 
     };
-    fetchData();
+    fetchDays();
   }, []);
 
   const handleDayClick = (day: DayProps) => {
@@ -56,26 +54,13 @@ const DayList = () => {
     onOpen();
   };
 
-  const handleCloseDropdown = () => {
+  const handleClose = () => {
     setSelectedDay(null);
     onClose();
   };
   console.log(selectedDay);
   return (
     <Box p={4}>
-      <Text fontSize="lg" mb={4}>
-        Day List
-      </Text>
-      {isLoading ? (
-        <Spinner />
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <>
-          <Button>Create Event</Button>
-          <div>
-            <br />
-          </div>
           <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={6}>
             {days.map((day) => (
               <Box
@@ -91,21 +76,25 @@ const DayList = () => {
               </Box>
             ))}
           </SimpleGrid>
-        </>
-      )}
 
       {selectedDay && (
-        <Modal isOpen={isOpen} onClose={handleCloseDropdown}>
+        <Modal isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Day Details</ModalHeader>
+            <ModalHeader>Date: {formatDate(selectedDay.dayStart, "MM/DD/YYYY")}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <p>Date: {formatDate(selectedDay.dayStart, "MM/DD/YYYY")}</p>
-              <div>
-                Events:
-                <ListEvents eventIds={selectedDay.events} />
-              </div>
+            {isLoading ? (
+                <Spinner />
+              ) : (
+                events
+                  .filter(
+                    (event) =>
+                      new Date(event.eventStart).toDateString() ===
+                      new Date(selectedDay.dayStart).toDateString()
+                  )
+                  .map((event) => <EventCard key={event._id} {...event} />)
+              )}
             </ModalBody>
           </ModalContent>
         </Modal>

@@ -12,7 +12,8 @@ exports.createEvent = async (req, res) => {
       throw new Error("request body is missing");
     }
     const { eventType, notes, eventStart, eventEnd, _id } = req.body;
-    if (!eventType || !_id) {
+    if (!eventType || !eventStart || !eventEnd
+    ) {
       statusCode = 400;
       throw new Error("Missing required fields");
     }
@@ -26,7 +27,6 @@ exports.createEvent = async (req, res) => {
     }
 
     const newEvent = new Event({
-      _id,
       eventType,
       notes,
       eventStart,
@@ -53,6 +53,25 @@ exports.createEvent = async (req, res) => {
       res,
       status: statusCode,
       message: error.message,
+    });
+  }
+};
+
+exports.listEvents = async (req, res) => {
+  try {
+    const events = await Event.find().sort({ eventStart: -1 }); // Sort by eventStart in descending order
+    return response({
+      res,
+      status: 200,
+      message: "Events retrieved successfully",
+      data: events,
+    });
+  } catch (error) {
+    console.error(error);
+    return response({
+      res,
+      status: 500,
+      message: "Server error",
     });
   }
 };
