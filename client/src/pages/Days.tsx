@@ -1,6 +1,6 @@
 // manage and display days
 import React from "react";
-import DayList from "../components/DayList";
+import DayList from "../components/DayListv2";
 
 const Days: React.FC = () => {
   return (

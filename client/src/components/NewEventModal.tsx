@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   Modal,
   ModalBody,
@@ -7,27 +7,28 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import EventForm, { EventProps } from "./EventForm";
+import EventForm from "./EventForm";
 import useEvents from "../hooks/useEvents";
+import {EventProps} from "../context/eventsContext"
 
 export type NewEventProps = {
-  // TODO: write the oncreateevent function
   isOpen: boolean;
   onClose: () => void;
+  onEventCreated: () => void;
 };
-// TODO Cleanup the code and refactor so that the event form shows?
-const NewEventModal: React.FC<NewEventProps> = ({ isOpen, onClose }) => {
+
+const NewEventModal: React.FC<NewEventProps> = ({ isOpen, onClose, onEventCreated }) => {
   const { createEvent, isLoading } = useEvents();
-  const initialRef = useRef(null);
 
   const handleSubmit = async (newEvent: EventProps) => {
     await createEvent(newEvent);
+    onEventCreated();
     onClose();
   };
 
   return (
     <>
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Event</ModalHeader>

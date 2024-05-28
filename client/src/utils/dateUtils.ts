@@ -1,5 +1,7 @@
 // utility functions
 import dayjs from "dayjs";
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+dayjs.extend(localizedFormat)
 
 // function to format a date into a specific string format
 export const formatDate = (date: string, format: string) => {
@@ -23,6 +25,18 @@ export const addDays = (date: Date, days: number) => {
 export const getMidnight=(date: Date)=> {
 return dayjs(date).startOf('day').toDate()
 }
+
+export const getDaysInMonth = (month: number, year: number) => {
+  const startOfMonth = dayjs(new Date(year, month, 1));
+  const endOfMonth = dayjs(new Date(year, month + 1, 0));
+
+  const days = [];
+  for (let day = startOfMonth; day.isBefore(endOfMonth) || day.isSame(endOfMonth); day = day.add(1, 'day')) {
+    days.push(day);
+  }
+
+  return days;
+};
 
 // Example usage
 // const formattedDate = formatDate('5/4/2024', 'YYYY-MM-DD HH:mm:ss');

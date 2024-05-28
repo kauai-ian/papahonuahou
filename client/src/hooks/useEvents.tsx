@@ -1,5 +1,8 @@
 import { useContext } from "react";
 import { EventsContext } from "../context/eventsContext";
+//manages state for events, handling event selection, and submission
+
+
 
 const useEvents = () => {
   const context = useContext(EventsContext);

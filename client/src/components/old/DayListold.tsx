@@ -15,11 +15,11 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { listDays } from "../api/days";
-import { formatDate } from "../utils/date";
+import { listDays } from "../../api/days";
+import { formatDate } from "../../utils/dateUtils";
 import ListEvents from "./ListEvents";
 
-export type DayProps = {
+type DayProps = {
   _id: string;
   dayStart: string;
   events: string[];

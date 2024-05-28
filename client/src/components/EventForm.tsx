@@ -1,8 +1,5 @@
 // form compoent for creating and editing events
-// TODO: fix the date / string type issues
-// TODO work on the edit button rendering the form modal
 import { useEffect, useState } from "react";
-import { formatDate } from "../utils/date";
 import {
   Box,
   Button,
@@ -12,28 +9,14 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import { EventProps, eventInitState } from "../context/eventsContext";
+import { formatDate, parseDate } from "../utils/dateUtils";
 
 type EventFormProps = {
   isEditMode?: boolean;
   eventData?: EventProps;
-  onSubmit: (event: EventProps) => void;
+  onSubmit: (event: EventProps) => Promise<void>;
   isLoading: boolean;
-};
-
-export type EventProps = {
-  _id: string;
-  eventType: string;
-  notes: string;
-  eventStart: string;
-  eventEnd: string;
-};
-
-const eventInitState: EventProps = {
-  _id: "",
-  eventType: "",
-  notes: "",
-  eventStart: "",
-  eventEnd: "",
 };
 
 const EventForm: React.FC<EventFormProps> = ({
@@ -43,14 +26,13 @@ const EventForm: React.FC<EventFormProps> = ({
   isLoading,
 }) => {
   const [formState, setFormState] = useState<EventProps>(eventData);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isEditMode && eventData._id) {
       setFormState({
         ...eventData,
-        eventStart: formatDate(eventData.eventStart, "YYYY-MM-DDTHH:mm"),
-        eventEnd: formatDate(eventData.eventEnd, "YYYY-MM-DDTHH:mm"),
+        eventStart: formatDate(eventData.eventStart, "YYYY-MM-DTHH:mm"),
+        eventEnd: formatDate(eventData.eventEnd, "YYYY-MM-DTHH:mm"),
       });
     }
   }, [isEditMode, eventData]);
@@ -68,24 +50,32 @@ const EventForm: React.FC<EventFormProps> = ({
   // handleSubmit is async to try edit event or create event and then navitgate to events page
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
     try {
-      await onSubmit(formState);
-    } catch (err) {
-      setError("Error submitting event data");
+      const formattedEvent = {
+        ...formState,
+        eventStart: parseDate(
+          formState.eventStart,
+          "YYYY-MM-DTHH:mm"
+        ).toISOString(),
+        eventEnd: parseDate(
+          formState.eventEnd,
+          "YYYY-MM-DTHH:mm"
+        ).toISOString(),
+      };
+      await onSubmit(formattedEvent);
+    } catch (error) {
+      console.error("Error submitting event data", error);
     }
   };
 
   return (
     <>
       <h2>{isEditMode ? "Edit Event" : "Create Event"}</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Box>
             <FormLabel htmlFor="eventType">Event Type: </FormLabel>
             <Select
-              defaultValue="sleep"
               id="eventType"
               name="eventType"
               value={formState.eventType}
