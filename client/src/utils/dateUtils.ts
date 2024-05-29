@@ -4,7 +4,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat';
 dayjs.extend(localizedFormat)
 
 // function to format a date into a specific string format
-export const formatDate = (date: string, format: string) => {
+export const formatDate = (date: string | Date, format: string): string => {
   return dayjs(date).format(format);
 };
 

@@ -1,6 +1,6 @@
 import { FC, ReactNode, createContext, useEffect, useState } from "react";
 import * as api from "../api/events";
-
+import { formatDate } from "../utils/dateUtils";
 
 export type EventProps = {
   _id: string;
@@ -26,7 +26,7 @@ export type EventsContextType = {
   deleteEvent: (eventId: string) => Promise<void>;
   selectEvent: (event: EventProps | null) => void;
   selectedEvent: EventProps | null;
-  
+  fetchEventsForDay: (dayStart: string) => EventProps[];
 };
 
 const initState: EventsContextType = {
@@ -37,7 +37,7 @@ const initState: EventsContextType = {
   deleteEvent: async () => {},
   selectEvent: () => {},
   selectedEvent: null,
-  
+  fetchEventsForDay: () => [],
 };
 
 export const EventsContext = createContext<EventsContextType>(initState);
@@ -46,7 +46,6 @@ const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<EventProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<EventProps | null>(null);
-
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -102,6 +101,11 @@ const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setSelectedEvent(event);
   };
 
+  const fetchEventsForDay = (dayStart: string): EventProps[] => {
+    return events.filter(
+      (event) => formatDate(event.eventStart, "YYYY-MM-DD") === dayStart
+    );
+  };
 
   return (
     <EventsContext.Provider
@@ -112,8 +116,8 @@ const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         editEvent,
         deleteEvent,
         selectedEvent,
-        selectEvent
-        
+        selectEvent,
+        fetchEventsForDay,
       }}
     >
       {children}

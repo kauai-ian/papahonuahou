@@ -1,18 +1,16 @@
-import EventForm from "../components/EventForm";
 import { Box, Spinner } from "@chakra-ui/react";
 import { EventProps } from "../context/eventsContext";
 import EventCard from "./EventCard";
 import useEvents from "../hooks/useEvents";
 import { formatDate } from "../utils/dateUtils";
+import NewEventModal from "./NewEventModal";
 
 type ListEventProps = {
   selectedDay: string;
-  onEventEdit: () => void;
 };
 // displaying a list of events for the selected day and handling event selection.
-const EventList: React.FC<ListEventProps> = ({ selectedDay, onEventEdit }) => {
-  const { events, selectedEvent, isLoading, editEvent, selectEvent } =
-    useEvents();
+const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
+  const { events, selectedEvent, isLoading, selectEvent } = useEvents();
 
   const filteredEvents: EventProps[] = events.filter(
     (event: EventProps) =>
@@ -20,12 +18,8 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay, onEventEdit }) => {
       formatDate(selectedDay, "YYYY-MM-DD")
   );
 
-  const handleEditSubmit = async (updatedEvent: EventProps) => {
-    if (selectedEvent && selectedEvent._id) {
-      await editEvent(selectedEvent._id, updatedEvent);
-      selectEvent(null);
-      onEventEdit();
-    }
+  const handleCancel = () => {
+    selectEvent(null);
   };
 
   return (
@@ -38,11 +32,11 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay, onEventEdit }) => {
         _hover={{ bg: "gray.100" }}
       >
         {selectedEvent ? (
-          <EventForm
-            isEditMode={true} // brings up the eventform modal
+          <NewEventModal
+            isOpen={!!selectedEvent}
+            onClose={handleCancel}
             eventData={selectedEvent}
-            onSubmit={handleEditSubmit}
-            isLoading={isLoading}
+            isEditMode={true} // brings up the event form modal
           />
         ) : isLoading ? (
           <Spinner />

@@ -11,20 +11,20 @@ import {
 } from "@chakra-ui/react";
 import { EventProps, eventInitState } from "../context/eventsContext";
 import { formatDate, parseDate } from "../utils/dateUtils";
+import useEvents from "../hooks/useEvents";
 
 type EventFormProps = {
   isEditMode?: boolean;
   eventData?: EventProps;
-  onSubmit: (event: EventProps) => Promise<void>;
-  isLoading: boolean;
+  onCancel: () => void;
 };
 
 const EventForm: React.FC<EventFormProps> = ({
   isEditMode = false,
   eventData = eventInitState,
-  onSubmit,
-  isLoading,
+  onCancel,
 }) => {
+  const { createEvent, editEvent, isLoading } = useEvents();
   const [formState, setFormState] = useState<EventProps>(eventData);
 
   useEffect(() => {
@@ -62,11 +62,18 @@ const EventForm: React.FC<EventFormProps> = ({
           "YYYY-MM-DTHH:mm"
         ).toISOString(),
       };
-      await onSubmit(formattedEvent);
+      if (isEditMode && formState._id) {
+        await editEvent(formState._id, formattedEvent);
+      } else {
+        await createEvent(formattedEvent);
+      }
+      onCancel();
     } catch (error) {
       console.error("Error submitting event data", error);
     }
   };
+
+  
 
   return (
     <>
@@ -119,9 +126,14 @@ const EventForm: React.FC<EventFormProps> = ({
               required
             />
           </Box>
-          <Button type="submit" disabled={isLoading}>
-            {isEditMode ? "Update Event" : "Create Event"}
-          </Button>
+          <Box>
+            <Button type="submit" disabled={isLoading}>
+              {isEditMode ? "Update Event" : "Create Event"}
+            </Button>
+            <Button onClick={onCancel} disabled={isLoading}>
+              Cancel
+            </Button>
+          </Box>
         </FormControl>
       </form>
     </>

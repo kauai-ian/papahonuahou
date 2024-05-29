@@ -8,21 +8,22 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import EventForm from "./EventForm";
-import useEvents from "../hooks/useEvents";
-import {EventProps} from "../context/eventsContext"
+import { EventProps } from "../context/eventsContext";
 
 export type NewEventProps = {
   isOpen: boolean;
   onClose: () => void;
-  onEventCreated: () => void;
+  eventData?: EventProps;
+  isEditMode?: boolean;
 };
 
-const NewEventModal: React.FC<NewEventProps> = ({ isOpen, onClose, onEventCreated }) => {
-  const { createEvent, isLoading } = useEvents();
-
-  const handleSubmit = async (newEvent: EventProps) => {
-    await createEvent(newEvent);
-    onEventCreated();
+const NewEventModal: React.FC<NewEventProps> = ({
+  isOpen,
+  onClose,
+  eventData,
+  isEditMode = false,
+}) => {
+  const handleCancel = () => {
     onClose();
   };
 
@@ -35,9 +36,9 @@ const NewEventModal: React.FC<NewEventProps> = ({ isOpen, onClose, onEventCreate
           <ModalCloseButton />
           <ModalBody>
             <EventForm
-              isEditMode={false}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
+              isEditMode={isEditMode}
+              eventData={eventData}
+              onCancel={handleCancel}
             />
           </ModalBody>
         </ModalContent>

@@ -6,7 +6,6 @@ import * as api from "../api/days";
 export type DayProps = {
   _id: string;
   dayStart: string;
-  
 };
 
 export type DaysContextType = {
@@ -56,7 +55,15 @@ export const DaysProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   return (
-    <DaysContext.Provider value={{ days, isLoading, fetchDays, selectedDay, selectDay }}>
+    <DaysContext.Provider
+      value={{
+        days,
+        isLoading,
+        fetchDays,
+        selectedDay,
+        selectDay,
+      }}
+    >
       {children}
     </DaysContext.Provider>
   );
