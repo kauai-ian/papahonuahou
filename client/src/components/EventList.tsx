@@ -7,6 +7,7 @@ import NewEventModal from "./NewEventModal";
 
 type ListEventProps = {
   selectedDay: string;
+  
 };
 // displaying a list of events for the selected day and handling event selection.
 const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
@@ -44,7 +45,7 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
           <p>No events to display.</p>
         ) : (
           filteredEvents.map((event) => (
-            <EventCard key={event._id} {...event} />
+            <EventCard key={event._id} {...event}  />
           ))
         )}
       </Box>

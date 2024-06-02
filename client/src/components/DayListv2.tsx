@@ -8,7 +8,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -16,9 +15,12 @@ import { formatDate } from "../utils/dateUtils";
 import EventList from "./EventList";
 import { useDays } from "../hooks/useDays";
 import { DayProps } from "../context/daysContext";
+import { useEffect, useMemo } from "react";
+import useEvents from "../hooks/useEvents";
 
 const DayList = () => {
   const { days, selectDay, selectedDay } = useDays();
+  const { events } = useEvents();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDayClick = (day: DayProps) => {
@@ -30,11 +32,33 @@ const DayList = () => {
     selectDay(null);
     onClose();
   };
+
+  const sortedDays = useMemo(() => {
+    return [...days].sort(
+      (a, b) => new Date(a.dayStart).getTime() - new Date(b.dayStart).getTime()
+    );
+  }, [days]);
+
+  useEffect(() => {
+    // ensure current day is first shown
+    const today = new Date().toISOString().split("T")[0];
+    const currentDay = days.find((day) => day.dayStart === today);
+    if (currentDay) {
+      selectDay(currentDay);
+    }
+  }, [days, selectDay]);
+
   console.log(selectedDay);
   return (
     <Box p={4}>
-      <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={6}>
-        {days.map((day) => (
+      {sortedDays.map((day) => {
+        const dayEvents = events ?
+        events.filter(
+          (event) =>
+            formatDate(event.eventStart, "YYYY-MM-DD") ===
+            formatDate(day.dayStart, "YYYY-MM-DD")
+        ): [];
+        return (
           <Box
             key={day._id}
             p={4}
@@ -45,9 +69,20 @@ const DayList = () => {
             onClick={() => handleDayClick(day)}
           >
             <Text fontSize="lg">{formatDate(day.dayStart, "MM/DD")}</Text>
+            {dayEvents.length > 0 && (
+              <Box mt={2}>
+                <Text fontSize="sm">Events: </Text>
+                {dayEvents.map((event) => (
+                  <Text key={event._id} fontSize="sm">
+                    - {event.eventType} ({formatDate(event.eventStart, "HH:mm")}{" "}
+                    - {formatDate(event.eventEnd, "HH:mm")})
+                  </Text>
+                ))}
+              </Box>
+            )}
           </Box>
-        ))}
-      </SimpleGrid>
+        );
+      })}
 
       {selectedDay && (
         <Modal isOpen={isOpen} onClose={handleClose}>
@@ -60,7 +95,6 @@ const DayList = () => {
             <ModalBody>
               <EventList
                 selectedDay={selectedDay.dayStart}
-                onEventEdit={onOpen}
               />
             </ModalBody>
           </ModalContent>

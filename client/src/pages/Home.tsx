@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import NewEventModal from "../components/NewEventModal";
 import { Box, Button } from "@chakra-ui/react";
 import { CalendarComponent } from "../components/CalendarComponent";
+import DayList from "../components/DayListv2";
 
 const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +25,10 @@ const Home: React.FC = () => {
       </Box>
       <Box mt="8">
         <CalendarComponent />
+      </Box>
+      <Box>
+      <h1>Days List</h1>
+      <DayList />
       </Box>
     </Box>
   );

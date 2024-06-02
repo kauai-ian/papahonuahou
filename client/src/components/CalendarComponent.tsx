@@ -17,6 +17,7 @@ export const CalendarComponent: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dayEvents, setDayEvents] = useState<EventProps[]>([]);
 
+  
   const handleDayClick = (date: Date) => {
     const formattedDate = formatDate(date, "YYYY-MM-DD");
     const eventsForDay = fetchEventsForDay(formattedDate);
@@ -24,6 +25,7 @@ export const CalendarComponent: React.FC = () => {
     selectDay({_id: formattedDate, dayStart: formattedDate})
     onOpen();
   };
+  
 
   const handleClose = () => {
     selectDay(null);
@@ -56,8 +58,8 @@ export const CalendarComponent: React.FC = () => {
             const formattedDate = formatDate(date, "YYYY-MM-DD");
             const dayEvents = fetchEventsForDay(formattedDate);
             return dayEvents.length ? (
-              <Box mt={2}>
-                <p>{dayEvents.length} e</p>
+              <Box mt={2} bgColor="green">
+        
               </Box>
           ) : null;
         }
