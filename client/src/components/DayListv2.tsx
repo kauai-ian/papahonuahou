@@ -40,7 +40,7 @@ const DayList = () => {
   }, [days]);
 
   useEffect(() => {
-    // ensure current day is first shown
+    // TODO: ensure current day is first shown
     const today = new Date().toISOString().split("T")[0];
     const currentDay = days.find((day) => day.dayStart === today);
     if (currentDay) {
@@ -74,8 +74,7 @@ const DayList = () => {
                 <Text fontSize="sm">Events: </Text>
                 {dayEvents.map((event) => (
                   <Text key={event._id} fontSize="sm">
-                    - {event.eventType} ({formatDate(event.eventStart, "HH:mm")}{" "}
-                    - {formatDate(event.eventEnd, "HH:mm")})
+                    - {event.eventType} {formatDate(event.eventStart, "h:mm A")}
                   </Text>
                 ))}
               </Box>

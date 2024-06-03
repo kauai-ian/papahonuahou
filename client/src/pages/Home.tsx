@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import NewEventModal from "../components/NewEventModal";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Center } from "@chakra-ui/react";
 import { CalendarComponent } from "../components/CalendarComponent";
 import DayList from "../components/DayListv2";
 
@@ -23,9 +23,9 @@ const Home: React.FC = () => {
         <Button onClick={openModal}>Create New Event</Button>
         <NewEventModal isOpen={isModalOpen} onClose={closeModal} />
       </Box>
-      <Box mt="8">
+      <Center mt="8" >
         <CalendarComponent />
-      </Box>
+      </Center>
       <Box>
       <h1>Days List</h1>
       <DayList />

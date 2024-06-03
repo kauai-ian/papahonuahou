@@ -4,10 +4,10 @@ import EventCard from "./EventCard";
 import useEvents from "../hooks/useEvents";
 import { formatDate } from "../utils/dateUtils";
 import NewEventModal from "./NewEventModal";
+import StatisticsComponent from "./EventStatistics";
 
 type ListEventProps = {
   selectedDay: string;
-  
 };
 // displaying a list of events for the selected day and handling event selection.
 const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
@@ -45,7 +45,16 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
           <p>No events to display.</p>
         ) : (
           filteredEvents.map((event) => (
-            <EventCard key={event._id} {...event}  />
+            <Box key={event._id}>
+              <EventCard statistics={null} {...event} />
+              <StatisticsComponent 
+                filter={{
+                  eventType: event.eventType,
+                  eventStart: new Date(event.eventStart),
+                  eventEnd: new Date(event.eventEnd),
+                }}
+              />
+            </Box>
           ))
         )}
       </Box>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { EventProps } from "../components/EventForm";
+import  {EventProps}  from "../context/eventsContext";
 
 const ROOT = "http://localhost:3000/api/events";
 

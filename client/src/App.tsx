@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Days from "./pages/Days";
 import useEvents from "./hooks/useEvents";
 import Loading from "./components/Loading";
+import StatisticsPage from "./pages/Statistics";
 
 
 const App: React.FC = () => {
@@ -21,11 +22,15 @@ const App: React.FC = () => {
           <li>
             <Link to="/days">Days</Link>
           </li>
+          <li>
+            <Link to="/statistics">Statistics</Link>
+          </li>
         </ul>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/days" element={<Days />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
       </Routes>
       </>
       )}
