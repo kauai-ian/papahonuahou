@@ -9,6 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  
   useDisclosure,
 } from "@chakra-ui/react";
 import { formatDate } from "../utils/dateUtils";
@@ -48,20 +49,26 @@ const DayList = () => {
     }
   }, [days, selectDay]);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
   console.log(selectedDay);
   return (
-    <Box p={4}>
+    <Box>
       {sortedDays.map((day) => {
-        const dayEvents = events ?
-        events.filter(
-          (event) =>
-            formatDate(event.eventStart, "YYYY-MM-DD") ===
-            formatDate(day.dayStart, "YYYY-MM-DD")
-        ): [];
+        const dayEvents = events
+          ? events.filter(
+              (event) =>
+                formatDate(event.eventStart, "YYYY-MM-DD") ===
+                formatDate(day.dayStart, "YYYY-MM-DD")
+            )
+          : [];
         return (
           <Box
             key={day._id}
-            p={4}
+            p={2}
+            m={2}
             borderRadius="lg"
             borderWidth="1px"
             cursor="pointer"
@@ -73,9 +80,20 @@ const DayList = () => {
               <Box mt={2}>
                 <Text fontSize="sm">Events: </Text>
                 {dayEvents.map((event) => (
-                  <Text key={event._id} fontSize="sm">
-                    - {event.eventType} {formatDate(event.eventStart, "h:mm A")}
-                  </Text>
+                  <Box
+                    key={event._id}
+                    display="flex"
+                    justifyContent="space-between"
+                  >
+                    <Box flex="1">
+                      <Text fontSize="sm">
+                        {formatDate(event.eventStart, "h:mm A")}
+                      </Text>
+                    </Box>
+                    <Box flex="1">
+                      <Text fontSize="sm">{capitalizeFirstLetter(event.eventType)} </Text>
+                    </Box>
+                  </Box>
                 ))}
               </Box>
             )}
@@ -92,9 +110,7 @@ const DayList = () => {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <EventList
-                selectedDay={selectedDay.dayStart}
-              />
+              <EventList selectedDay={selectedDay.dayStart} />
             </ModalBody>
           </ModalContent>
         </Modal>

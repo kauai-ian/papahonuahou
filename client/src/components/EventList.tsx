@@ -53,6 +53,7 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
                   eventStart: new Date(event.eventStart),
                   eventEnd: new Date(event.eventEnd),
                 }}
+                
               />
             </Box>
           ))

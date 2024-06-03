@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import useEvents from "../hooks/useEvents";
 import { EventProps } from "../context/eventsContext";
 import { formatDate } from "../utils/dateUtils";
@@ -34,34 +34,34 @@ const EventCard: React.FC<EventCardProps> = ({
     });
   };
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
   return (
     <>
-      <p>Event Type: {eventType}</p>
+      <p>{capitalizeFirstLetter(eventType)}</p>
       <p>Notes: {notes}</p>
       <p>Start Time: {formatDate(eventStart, "llll")}</p>
       <p>End Time: {formatDate(eventEnd, "llll")}</p>
-      {statistics && (
+      {/* {statistics && (
         <div>
-          <p>Total Events: {statistics.totalEvents}</p>
           {eventType === "sleep" && (
             <>
               <p>Total Sleep Time: {statistics.totalSleepTime}</p>
-              <p>Total Sleep Events: {statistics.totalSleepEvents}</p>
             </>
           )}
           {eventType === "nap" && (
             <>
               <p>Total Nap Time: {statistics.totalNapTime}</p>
-              <p>Total Nap Events: {statistics.totalNapEvents}</p>
             </>
           )}
-          {eventType === "meal" && (
-            <p>Total Meal Events: {statistics.totalMealEvents}</p>
-          )}
+          
         </div>
-      )}
+      )} */}
+      <Box display="flex" justifyContent="center" gap="30px">
       <Button onClick={handleEdit}>Edit</Button>
-      <Button onClick={handleDelete}>Delete</Button>
+      <Button onClick={handleDelete}>Delete</Button></Box>
     </>
   );
 };

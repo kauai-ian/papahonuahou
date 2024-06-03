@@ -57,9 +57,9 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
   }
 
   return (
-    <Box display={{ md: 'flex' }} w='60%'>
+    <Box >
       {statistics ? (
-        <Box flexShrink={0} w='60%'>
+        <Box >
           
           <Text>Total Events (sleep, naps and meals): {statistics.totalEvents}</Text>
           {filter.eventType === 'sleep' && (

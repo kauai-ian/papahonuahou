@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -32,7 +33,8 @@ const StatisticsForm: React.FC = () => {
     }
   };
   return (
-    <Box>
+    <Center>
+    <Box  w={['90%', '70%', '50%', '30%']}>
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl id="eventType">
@@ -69,6 +71,7 @@ const StatisticsForm: React.FC = () => {
       </form>
       {queryParams && <StatisticsComponent filter={queryParams}/>}
     </Box>
+    </Center>
   );
 };
 
