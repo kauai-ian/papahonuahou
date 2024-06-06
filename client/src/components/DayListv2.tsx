@@ -1,5 +1,3 @@
-// display and handle days
-
 import {
   Box,
   Modal,
@@ -9,7 +7,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  
   useDisclosure,
 } from "@chakra-ui/react";
 import { formatDate } from "../utils/dateUtils";
@@ -33,7 +30,7 @@ const DayList = () => {
     selectDay(null);
     onClose();
   };
-
+// explanation: useMemo stores the computed result and only recalcs when a dep changes to reduce calcs on renders. As list of days grows, this will save on computation power. 
   const sortedDays = useMemo(() => {
     return [...days].sort(
       (a, b) => new Date(a.dayStart).getTime() - new Date(b.dayStart).getTime()
@@ -41,7 +38,7 @@ const DayList = () => {
   }, [days]);
 
   useEffect(() => {
-    // TODO: ensure current day is first shown
+    // TODO: not working. selects the current day if its in the list of days
     const today = new Date().toISOString().split("T")[0];
     const currentDay = days.find((day) => day.dayStart === today);
     if (currentDay) {
@@ -51,7 +48,7 @@ const DayList = () => {
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
+  };
 
   console.log(selectedDay);
   return (
@@ -80,18 +77,16 @@ const DayList = () => {
               <Box mt={2}>
                 <Text fontSize="sm">Events: </Text>
                 {dayEvents.map((event) => (
-                  <Box
-                    key={event._id}
-                    display="flex"
-                    justifyContent="space-between"
-                  >
-                    <Box flex="1">
+                  <Box key={event._id} display="flex" gap="2rem">
+                    <Box borderRight="1px" borderColor="gray.300" pr={4}>
                       <Text fontSize="sm">
                         {formatDate(event.eventStart, "h:mm A")}
                       </Text>
                     </Box>
-                    <Box flex="1">
-                      <Text fontSize="sm">{capitalizeFirstLetter(event.eventType)} </Text>
+                    <Box>
+                      <Text fontSize="sm">
+                        {capitalizeFirstLetter(event.eventType)}{" "}
+                      </Text>
                     </Box>
                   </Box>
                 ))}

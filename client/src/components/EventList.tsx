@@ -4,7 +4,6 @@ import EventCard from "./EventCard";
 import useEvents from "../hooks/useEvents";
 import { formatDate } from "../utils/dateUtils";
 import NewEventModal from "./NewEventModal";
-import StatisticsComponent from "./EventStatistics";
 
 type ListEventProps = {
   selectedDay: string;
@@ -46,15 +45,8 @@ const EventList: React.FC<ListEventProps> = ({ selectedDay }) => {
         ) : (
           filteredEvents.map((event) => (
             <Box key={event._id}>
-              <EventCard statistics={null} {...event} />
-              <StatisticsComponent 
-                filter={{
-                  eventType: event.eventType,
-                  eventStart: new Date(event.eventStart),
-                  eventEnd: new Date(event.eventEnd),
-                }}
-                
-              />
+              <EventCard {...event} />
+             
             </Box>
           ))
         )}

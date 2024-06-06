@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Text, Spinner } from "@chakra-ui/react";
 import { getStatistics } from "../api/events"; // Ensure you have the correct path to your API functions
 
-export type Statistic = {
+ type Statistic = {
   totalEvents: number;
   totalSleepTime: number;
   totalSleepEvents: number;
@@ -43,12 +43,7 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
     };
     fetchStats();
   }, [filter]);
-  // try to filter for event type of sleep, event start, event end.
-  // getStatistics for the filtered data
-  // set state for the stats data
-  //
-  // click event to fetch data?
-  // TODO: have a form to select data query?
+ 
   if (loading) {
     return <Spinner />;
   }
