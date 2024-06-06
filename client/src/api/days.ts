@@ -1,14 +1,14 @@
 import axios from "axios";
 
-const ROOT = "http://localhost:3000/api/days";
+const ROOT = import.meta.env.VITE_ROOT;
 
 export const listDays = async () => {
-    const response = await axios.get(ROOT);
-    console.log("response", response.data)
-    return response.data
-}
+  const response = await axios.get(`${ROOT}/days`);
+  console.log("response", response.data);
+  return response.data;
+};
 
 export const getDay = async (_id: string) => {
-    const response = await axios.get(`${ROOT}/${_id}`);
-    return response.data
-}
+  const response = await axios.get(`${ROOT}/days/${_id}`);
+  return response.data;
+};
