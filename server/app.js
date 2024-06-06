@@ -8,7 +8,6 @@ const http = require("http");
 const cors = require("cors");
 const routes = require("./routes/event.routes");
 
-
 const port = process.env.PORT || 3000;
 
 // connect to db
@@ -52,8 +51,11 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
+// for dev development uncomment
+// server.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
 module.exports = app;
