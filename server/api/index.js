@@ -6,7 +6,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
-const routes = require("./routes/event.routes");
+const routes = require("../routes/event.routes");
 
 const port = process.env.PORT || 3000;
 
@@ -54,8 +54,8 @@ app.use(function (err, req, res, next) {
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
 // for dev development uncomment
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// server.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
 module.exports = app;
