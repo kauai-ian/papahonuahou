@@ -9,14 +9,59 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { formatDate } from "../utils/dateUtils";
 import { useDays } from "../hooks/useDays";
 import EventList from "./EventList";
 import useEvents from "../hooks/useEvents";
 import { EventProps } from "../context/eventsContext";
+import Calendar from "react-calendar";
+import styled from "styled-components";
+import "../Calendar.css";
 
+const CustomCalendar = styled(Calendar)`
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  /* button styles  */
+  button {
+    background-color: transparent;
+    border: none;
+    color: #0070c9;
+    cursor: pointer;
+    font-size: 18px;
+    outline: none;
+    padding: 8px;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #004d99;
+    }
+
+    &:disabled {
+      color: #bfbfbf;
+      cursor: default;
+      
+    }
+  }
+  /*  active day styles */
+  .react-calendar__tile--active {
+    background-color: #0070c9;
+    color: #ffffff;
+  }
+  /* custom tile styles */
+  .react-calendar__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+`;
 // TODO: when the new event is submitted, the dates dont rerender to show the new event.
 
 export const CalendarComponent: React.FC = () => {
@@ -50,7 +95,8 @@ export const CalendarComponent: React.FC = () => {
       boxShadow="md"
       bg="white"
     >
-      <Calendar calendarType='gregory'
+      <CustomCalendar
+        calendarType="gregory"
         onChange={(value) => {
           if (value instanceof Date) {
             setCurrentDate(value);
@@ -62,7 +108,16 @@ export const CalendarComponent: React.FC = () => {
           if (view === "month") {
             const formattedDate = formatDate(date, "YYYY-MM-DD");
             const dayEvents = fetchEventsForDay(formattedDate);
-            return dayEvents.length ? <Box m={0} p={0} fontSize="xl"> .</Box> : null;
+            return dayEvents.length > 0 ? (
+              <Box m={0} p={0} fontSize="3xl" color='grey'>
+                {" "}
+                .
+              </Box>
+            ) : (<Box m={0} p={0} fontSize="3xl" color='white' opacity='0'>
+            {" "}
+            .
+          </Box>
+        );
           }
         }}
         onClickDay={handleDayClick}

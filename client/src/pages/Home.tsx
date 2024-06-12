@@ -16,19 +16,26 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Center flexDir="column" >
-      <h1>Home Page</h1>
-      <p>Welcome to the home page.</p>
-      <Box>
+    <Center flexDir="column">
+      <Box display='flex' justifyContent="" textAlign='left' m={2}>
+        <p style={{ fontSize: "1.5rem", fontWeight: "bold" }}>Events</p>
+      </Box>
+      <Box m={2}>
         <Button onClick={openModal}>Create New Event</Button>
         <NewEventModal isOpen={isModalOpen} onClose={closeModal} />
       </Box>
-      <Center mt="8" mb="8" >
+      
+      <Center mt="8" mb="8">
         <CalendarComponent />
       </Center>
-      <Box mb="2" w={['90%', '70%', '50%', '30%']}>
-      <h1>Days List</h1>
-      <DayList />
+
+      <Box
+        mb="2"
+        w={["90%", "70%", "50%", "30%"]}
+        maxHeight="calc(100vh - 300px)"
+        overflowY="auto"
+      >
+        <DayList />
       </Box>
     </Center>
   );
