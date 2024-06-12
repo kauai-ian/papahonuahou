@@ -6,6 +6,7 @@ import Days from "./pages/Days";
 import useEvents from "./hooks/useEvents";
 import Loading from "./components/Loading";
 import StatisticsPage from "./pages/Statistics";
+import './Calendar.css'
 
 
 const App: React.FC = () => {
