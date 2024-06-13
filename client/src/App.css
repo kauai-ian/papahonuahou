@@ -6,6 +6,14 @@
 
 }
 
+h1 {
+  font-size:x-large;
+}
+
+h2 {
+  font-size: larger;
+}
+
 nav ul {
   display: flex;
   justify-content: space-evenly;

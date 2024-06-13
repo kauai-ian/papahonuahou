@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Text, Spinner, Button } from "@chakra-ui/react";
+import { Box, Text, Spinner, Button, Stack } from "@chakra-ui/react";
 import { getStatistics } from "../api/events";
 import dayjs from "dayjs";
 
-type StatisticToggle = {
+type StatisticSummary = {
   totalEvents: number;
   totalSleepTime: number;
   totalSleepEvents: number;
@@ -14,18 +14,18 @@ type StatisticToggle = {
   averageNapTime: number;
 };
 
-type StatisticsToggleProps = {
+type StatisticSummaryProps = {
   filter: {
-    eventType: string;
+    eventTypes: string[];
     eventStart: Date;
     eventEnd: Date;
   };
 };
 
-export const ToggleStatisticsComponent: React.FC<StatisticsToggleProps> = ({
+export const SummaryStatisticsComponent: React.FC<StatisticSummaryProps> = ({
   filter,
 }) => {
-  const [statistics, setStatistics] = useState<StatisticToggle | null>(null);
+  const [statistics, setStatistics] = useState<StatisticSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [timeRange, setTimeRange] = useState<string>("7days");
 
@@ -48,6 +48,7 @@ export const ToggleStatisticsComponent: React.FC<StatisticsToggleProps> = ({
       try {
         const { eventStart, eventEnd } = calculateDateRange();
         const updatedFilter = { ...filter, eventStart, eventEnd };
+        console.log("Fetching statistics with filter:", updatedFilter);
         const response = await getStatistics(updatedFilter);
         console.log("Statistics data:", response.data);
         setStatistics(response.data);
@@ -68,7 +69,7 @@ export const ToggleStatisticsComponent: React.FC<StatisticsToggleProps> = ({
   }
 
   return (
-    <Box w="100%">
+    <Stack direction="row" spacing={10}>
       <Box display="flex" justifyContent="space-around" mb={4}>
         <Button onClick={() => setTimeRange("7days")}>Last 7 Days</Button>
         <Button onClick={() => setTimeRange("30days")}>Last 30 Days</Button>
@@ -80,39 +81,35 @@ export const ToggleStatisticsComponent: React.FC<StatisticsToggleProps> = ({
             <Text>
               Total Events (sleep, naps and meals): {statistics.totalEvents}
             </Text>
-            {filter.eventType === "sleep" && (
-              <>
-                <Text>
-                  Total Sleep Time: {statistics.totalSleepTime.toFixed(1)} hours
-                </Text>
-                <Text>Total Sleep Events: {statistics.totalSleepEvents}</Text>
-                <Text>
-                  Average Sleep Time: {statistics.averageSleepTime.toFixed(1)}{" "}
-                  hours
-                </Text>
-              </>
-            )}
-            {filter.eventType === "nap" && (
-              <>
-                <Text>
-                  Total Nap Time: {statistics.totalNapTime.toFixed(1)} hours
-                </Text>
-                <Text>Total Nap Events: {statistics.totalNapEvents}</Text>
-                <Text>
-                  Average Nap Time: {statistics.averageNapTime.toFixed(1)} hours
-                </Text>
-              </>
-            )}
-            {filter.eventType === "meal" && (
-              <>
-                <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
-              </>
-            )}
+            <>
+              <Text>
+                Total Sleep Time: {statistics.totalSleepTime.toFixed(1)} hours
+              </Text>
+              <Text>Total Sleep Events: {statistics.totalSleepEvents}</Text>
+              <Text>
+                Average Sleep Time: {statistics.averageSleepTime.toFixed(1)}{" "}
+                hours
+              </Text>
+            </>
+
+            <>
+              <Text>
+                Total Nap Time: {statistics.totalNapTime.toFixed(1)} hours
+              </Text>
+              <Text>Total Nap Events: {statistics.totalNapEvents}</Text>
+              <Text>
+                Average Nap Time: {statistics.averageNapTime.toFixed(1)} hours
+              </Text>
+            </>
+
+            <>
+              <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
+            </>
           </Box>
         ) : (
           <Text>No statistics available</Text>
         )}
       </Box>
-    </Box>
+    </Stack>
   );
 };

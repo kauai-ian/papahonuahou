@@ -1,9 +1,9 @@
 // display event statistics
 import React, { useEffect, useState } from "react";
 import { Box, Text, Spinner } from "@chakra-ui/react";
-import { getStatistics } from "../api/events"; // Ensure you have the correct path to your API functions
+import { getStatistics } from "../api/events";
 
- type Statistic = {
+type Statistic = {
   totalEvents: number;
   totalSleepTime: number;
   totalSleepEvents: number;
@@ -16,7 +16,7 @@ import { getStatistics } from "../api/events"; // Ensure you have the correct pa
 
 type StatisticsComponentProps = {
   filter: {
-    eventType: string;
+    eventTypes: string[];
     eventStart: Date;
     eventEnd: Date;
   };
@@ -43,7 +43,7 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
     };
     fetchStats();
   }, [filter]);
- 
+
   if (loading) {
     return <Spinner />;
   }
@@ -52,33 +52,44 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
   }
 
   return (
-    <Box >
+    <Box>
       {statistics ? (
-        <Box >
-          
-          <Text>Total Events (sleep, naps and meals): {statistics.totalEvents}</Text>
-          {filter.eventType === 'sleep' && (
+        <Box>
+          <Text>
+            Total Events (sleep, naps and meals): {statistics.totalEvents}
+          </Text>
+          {filter.eventTypes.includes("sleep") && (
             <>
-            <Text>Total Sleep Time: {statistics.totalSleepTime.toFixed(1)} hours</Text>
-            <Text>Total Sleep Events: {statistics.totalSleepEvents}</Text>
-            <Text>Average Sleep Time: {statistics.averageSleepTime.toFixed(1)} hours</Text>
-          </>
-        )}
-        {filter.eventType === 'nap' && (
-          <><Text>Total Nap Time: {statistics.totalNapTime.toFixed(1)} hours</Text>
-          <Text>Total Nap Events: {statistics.totalNapEvents}</Text>
-          <Text>Average Nap Time: {statistics.averageNapTime.toFixed(1)} hours</Text>
-          </>
-        )}
-        {filter.eventType === 'meal' && (
-          <>
-          <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
-          </>
-        )}
+              <Text>
+                Total Sleep Time: {statistics.totalSleepTime.toFixed(1)} hours
+              </Text>
+              <Text>Total Sleep Events: {statistics.totalSleepEvents}</Text>
+              <Text>
+                Average Sleep Time: {statistics.averageSleepTime.toFixed(1)}{" "}
+                hours
+              </Text>
+            </>
+          )}
+          {filter.eventTypes.includes("nap") && (
+            <>
+              <Text>
+                Total Nap Time: {statistics.totalNapTime.toFixed(1)} hours
+              </Text>
+              <Text>Total Nap Events: {statistics.totalNapEvents}</Text>
+              <Text>
+                Average Nap Time: {statistics.averageNapTime.toFixed(1)} hours
+              </Text>
+            </>
+          )}
+          {filter.eventTypes.includes("meal") && (
+            <>
+              <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
+            </>
+          )}
         </Box>
       ) : (
-        <Text>No statistics available</Text>)
-      }
+        <Text>No statistics available</Text>
+      )}
     </Box>
   );
 };

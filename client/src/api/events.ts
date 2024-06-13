@@ -32,10 +32,15 @@ export const deleteEvent = async (_id: string) => {
 };
 
 export const getStatistics = async (filter: {
-  eventType: string;
+  eventTypes: string[];
   eventStart: Date;
   eventEnd: Date;
 }) => {
-  const response = await axios.post(`${ROOT}/statistics`, filter);
-  return response.data;
+  try {
+    const response = await axios.post(`${ROOT}/statistics`, filter);
+    return response.data;
+  } catch (error) {
+    console.error("Error in getStatistics API call:", error);
+    throw error;
+  }
 };

@@ -15,6 +15,8 @@ import { useDays } from "../hooks/useDays";
 import { DayProps } from "../context/daysContext";
 import { useEffect, useMemo } from "react";
 import useEvents from "../hooks/useEvents";
+import calculateDuration from "../utils/duration";
+import { capitalizeFirstLetter } from "../utils/capFirstLtr";
 
 const DayList = () => {
   const { days, selectDay, selectedDay } = useDays();
@@ -30,7 +32,7 @@ const DayList = () => {
     selectDay(null);
     onClose();
   };
-// explanation: useMemo stores the computed result and only recalcs when a dep changes to reduce calcs on renders. As list of days grows, this will save on computation power. 
+  // explanation: useMemo stores the computed result and only recalcs when a dep changes to reduce calcs on renders. As list of days grows, this will save on computation power.
   const sortedDays = useMemo(() => {
     return [...days].sort(
       (a, b) => new Date(a.dayStart).getTime() - new Date(b.dayStart).getTime()
@@ -46,10 +48,6 @@ const DayList = () => {
     }
   }, [days, selectDay]);
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   console.log(selectedDay);
   return (
     <Box>
@@ -61,6 +59,9 @@ const DayList = () => {
                 formatDate(day.dayStart, "YYYY-MM-DD")
             )
           : [];
+        if (dayEvents.length === 0) {
+          return null;
+        }
         return (
           <Box
             key={day._id}
@@ -72,20 +73,36 @@ const DayList = () => {
             _hover={{ bg: "gray.100" }}
             onClick={() => handleDayClick(day)}
           >
-            <Text fontSize="lg">{formatDate(day.dayStart, "MM/DD")}</Text>
+            <Text fontSize="lg" color="teal.700">
+              {formatDate(day.dayStart, "MM/DD")}
+            </Text>
             {dayEvents.length > 0 && (
               <Box mt={2}>
-                <Text fontSize="sm">Events: </Text>
+                {/* <Text fontSize="sm">Events: </Text> */}
                 {dayEvents.map((event) => (
                   <Box key={event._id} display="flex" gap="2rem">
-                    <Box borderRight="1px" borderColor="gray.300" pr={4}>
-                      <Text fontSize="sm">
+                    <Box borderRight="1px" borderColor="gray.300" pr={8}>
+                      <Text fontSize="sm" color="teal">
                         {formatDate(event.eventStart, "h:mm A")}
+                      </Text>
+                    </Box>
+                    <Box borderRight="1px" borderColor="gray.300" pr={8}>
+                      <Text fontSize="sm">
+                        {capitalizeFirstLetter(event.eventType)}
                       </Text>
                     </Box>
                     <Box>
                       <Text fontSize="sm">
-                        {capitalizeFirstLetter(event.eventType)}{" "}
+                        {(event.eventType === "sleep" ||
+                          event.eventType === "nap") && (
+                          <>
+                            {calculateDuration(
+                              event.eventStart,
+                              event.eventEnd
+                            )}{" "}
+                            hours
+                          </>
+                        )}
                       </Text>
                     </Box>
                   </Box>

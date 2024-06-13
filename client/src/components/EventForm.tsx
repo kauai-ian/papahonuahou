@@ -6,26 +6,32 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Select,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { EventProps, eventInitState } from "../context/eventsContext";
 import { formatDate, parseDate } from "../utils/dateUtils";
 import useEvents from "../hooks/useEvents";
+import { capitalizeFirstLetter } from "../utils/capFirstLtr";
 
 type EventFormProps = {
   isEditMode?: boolean;
   eventData?: EventProps;
+  eventType?: string;
   onCancel: () => void;
 };
 
 const EventForm: React.FC<EventFormProps> = ({
   isEditMode = false,
   eventData = eventInitState,
+  eventType = "",
   onCancel,
 }) => {
   const { createEvent, editEvent, isLoading } = useEvents();
-  const [formState, setFormState] = useState<EventProps>(eventData);
+  const [formState, setFormState] = useState<EventProps>({
+    ...eventData,
+    eventType: eventType || eventData.eventType,
+  });
 
   useEffect(() => {
     if (isEditMode && eventData._id) {
@@ -73,30 +79,23 @@ const EventForm: React.FC<EventFormProps> = ({
     }
   };
 
-  
-
   return (
     <>
-      <h2>{isEditMode ? "Edit Event" : "Create Event"}</h2>
+      <h2 style={{ fontWeight: "bold" }}>
+        {isEditMode ? "Edit Event" : "Create Event"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Box>
-            <FormLabel htmlFor="eventType">Event Type: </FormLabel>
-            <Select
-              id="eventType"
-              name="eventType"
-              value={formState.eventType}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select event type</option>
-              <option value="sleep">Sleep</option>
-              <option value="nap">Nap</option>
-              <option value="meal">Meal</option>
-            </Select>
+            <FormLabel htmlFor="eventType" color="teal">
+              Event Type:{" "}
+            </FormLabel>
+            <Text>{capitalizeFirstLetter(formState.eventType)}</Text>
           </Box>
           <Box>
-            <FormLabel htmlFor="notes">Notes: </FormLabel>
+            <FormLabel htmlFor="notes" color="teal">
+              Notes:{" "}
+            </FormLabel>
             <Textarea
               id="notes"
               name="notes"
@@ -105,7 +104,9 @@ const EventForm: React.FC<EventFormProps> = ({
             ></Textarea>
           </Box>
           <Box>
-            <FormLabel htmlFor="eventStart">Event Start: </FormLabel>
+            <FormLabel htmlFor="eventStart" color="teal">
+              Event Start:{" "}
+            </FormLabel>
             <Input
               type="datetime-local"
               id="eventStart"
@@ -116,7 +117,9 @@ const EventForm: React.FC<EventFormProps> = ({
             />
           </Box>
           <Box>
-            <FormLabel htmlFor="eventEnd">Event End: </FormLabel>
+            <FormLabel htmlFor="eventEnd" color="teal">
+              Event End:{" "}
+            </FormLabel>
             <Input
               type="datetime-local"
               id="eventEnd"
@@ -126,7 +129,7 @@ const EventForm: React.FC<EventFormProps> = ({
               required
             />
           </Box>
-          <Box>
+          <Box display="flex" justifyContent="center" gap={10} mt={4}>
             <Button type="submit" disabled={isLoading}>
               {isEditMode ? "Update Event" : "Create Event"}
             </Button>

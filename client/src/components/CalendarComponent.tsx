@@ -31,7 +31,7 @@ const CustomCalendar = styled(Calendar)`
   button {
     background-color: transparent;
     border: none;
-    color: #0070c9;
+    color: #2c7a7b;
     cursor: pointer;
     font-size: 18px;
     outline: none;
@@ -39,18 +39,17 @@ const CustomCalendar = styled(Calendar)`
     transition: color 0.3s ease;
 
     &:hover {
-      color: #004d99;
+      color: orange;
     }
 
     &:disabled {
       color: #bfbfbf;
       cursor: default;
-      
     }
   }
   /*  active day styles */
   .react-calendar__tile--active {
-    background-color: #0070c9;
+    background-color: #4fd1c5;
     color: #ffffff;
   }
   /* custom tile styles */
@@ -109,15 +108,16 @@ export const CalendarComponent: React.FC = () => {
             const formattedDate = formatDate(date, "YYYY-MM-DD");
             const dayEvents = fetchEventsForDay(formattedDate);
             return dayEvents.length > 0 ? (
-              <Box m={0} p={0} fontSize="3xl" color='grey'>
+              <Box m={0} p={0} fontSize="3xl" color="grey">
                 {" "}
                 .
               </Box>
-            ) : (<Box m={0} p={0} fontSize="3xl" color='white' opacity='0'>
-            {" "}
-            .
-          </Box>
-        );
+            ) : (
+              <Box m={0} p={0} fontSize="3xl" color="white" opacity="0">
+                {" "}
+                .
+              </Box>
+            );
           }
         }}
         onClickDay={handleDayClick}

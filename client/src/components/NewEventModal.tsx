@@ -4,7 +4,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import EventForm from "./EventForm";
@@ -14,6 +13,7 @@ export type NewEventProps = {
   isOpen: boolean;
   onClose: () => void;
   eventData?: EventProps;
+  eventType?: string;
   isEditMode?: boolean;
 };
 
@@ -21,6 +21,7 @@ const NewEventModal: React.FC<NewEventProps> = ({
   isOpen,
   onClose,
   eventData,
+  eventType,
   isEditMode = false,
 }) => {
   const handleCancel = () => {
@@ -32,12 +33,12 @@ const NewEventModal: React.FC<NewEventProps> = ({
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Event</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <EventForm
               isEditMode={isEditMode}
               eventData={eventData}
+              eventType={eventType}
               onCancel={handleCancel}
             />
           </ModalBody>
