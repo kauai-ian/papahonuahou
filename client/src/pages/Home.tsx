@@ -7,6 +7,7 @@ import {
   Heading,
   Image,
   Stack,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { GiBabyBottle } from "react-icons/gi";
@@ -26,8 +27,21 @@ const HomePage: React.FC = () => {
 
   return (
     <Center flexDir="column" p={4}>
-      <Image boxSize="150px" src={logo} alt="Logo" mx="auto" mb={8} />
+      <Image boxSize="200px" src={logo} alt="Logo" mx="auto" mb={4} />
+      <Box boxSize="50%" pb={6}>
+        <Text as="h1" pb={2}>Welcome back <b>Ian</b>, to Papa Honua Hou</Text>
+        <Text fontSize="lg" fontStyle="italic" pb={2}>
+          Your guide through the journey of fatherhood.
+        </Text>
 
+        <Text >
+          Embark on a new adventure with confidence. Papa Honua Hou is your
+          personal assistant, designed to help you navigate the early stages of
+          fatherhood with ease. From managing sleep schedules to supporting your
+          partner, we’re here to ensure you have the tools you need to thrive as
+          a new dad.
+        </Text>
+      </Box>
       <Stack direction="row" spacing={10} justify="center">
         <Box
           maxW="sm"

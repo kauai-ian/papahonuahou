@@ -28,6 +28,7 @@ import profilePic from './assets/IMG_0160.jpg'
 import ProfilePage from "./pages/Profile";
 import LogoutPage from "./pages/Logout";
 import HomePage from "./pages/Home";
+import AboutPage from "./pages/About";
 
 const App: React.FC = () => {
   const { isLoading } = useEvents();
@@ -110,6 +111,7 @@ const App: React.FC = () => {
               <Route path="/statistics" element={<StatisticsPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/logout" element={<LogoutPage />} />
+              <Route path="/about" element={<AboutPage />} />
             </Routes>
           </Box>
         </>
