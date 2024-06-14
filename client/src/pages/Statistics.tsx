@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import StatisticsForm from "../components/StatsForm";
 import { SummaryStatisticsComponent } from "../components/AllStatistics";
 
@@ -12,7 +12,7 @@ const StatisticsPage: React.FC = () => {
 
   return (
     <Box p={4}>
-      <h1>Statistics</h1>
+      <Heading as='h1' mb={6}>Statistics</Heading>
       <SummaryStatisticsComponent filter={filter} />
 
       <StatisticsForm />
