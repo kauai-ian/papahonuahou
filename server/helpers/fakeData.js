@@ -13,9 +13,7 @@ const getTodayMidnight = () => {
 
 async function createFakeData() {
   try {
-    await mongoose.connect(
-      "mongodb+srv://myAtlasDBUser:myatlas-001@myatlasclusteredu.p2eho02.mongodb.net/papaniuao?retryWrites=true&w=majority"
-    );
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("connected to mongoDB");
 
     const startDate = dayjs("2024-06-07");

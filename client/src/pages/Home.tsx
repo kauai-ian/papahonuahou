@@ -28,25 +28,26 @@ const HomePage: React.FC = () => {
   return (
     <Center flexDir="column" p={4} mb={8}>
       <Image boxSize="200px" src={logo} alt="Logo" mx="auto" mb={4} />
-      <Box boxSize={{base: '100%', md:'80%', lg: '50%'}}  mb={6}>
+      <Box boxSize={{ base: "100%", md: "80%", lg: "50%" }} mb={6}>
         <Text as="h1" pb={2}>
-          Welcome back <b>Ian</b>, to Papa Honua Hou
+          Welcome back <b>Ian</b>, to Honua Hou
         </Text>
         <Text fontSize="lg" fontStyle="italic" pb={2}>
           Your guide through the journey of fatherhood.
         </Text>
 
         <Text>
-          Embark on a new adventure with confidence. Papa Honua Hou is your
-          personal assistant, designed to help you navigate the early stages of
+          Embark on a new adventure with confidence. Honua Hou is your personal
+          assistant, designed to help you navigate the early stages of
           fatherhood with ease. From managing sleep schedules to supporting your
-          partner, we’re here to ensure you're livin' easy as a new dad.
+          partner, we're here to ensure you're livin' easy as a new dad.
         </Text>
       </Box>
-      <SimpleGrid  columns={{ base: 1, md: 2, lg: 2 }}
-        gap={6}
-        justifyContent='center' alignItems='center'
-        width={{ base: '90%', md: '70%', lg: '50%' }} >
+      <SimpleGrid
+        columns={{ base: 1, md: 2, lg: 2 }}
+        spacing={6}
+        width={{ base: "90%", md: "70%", lg: "50%" }}
+      >
         <Box
           maxW="300px"
           borderWidth="1px"
@@ -58,13 +59,13 @@ const HomePage: React.FC = () => {
           onClick={() => handleOpenForm("sleep")}
           cursor="pointer"
         >
-          <Center mb={4} >
+          <Center mb={4}>
             <GiNightSleep size="40px" color="teal" />
           </Center>
           <Heading size="md" mb={4}>
             Sleep
           </Heading>
-          <Button colorScheme="teal" mt='auto' width="full" whiteSpace='normal'>
+          <Button colorScheme="teal" mt="auto" width="full" whiteSpace="normal">
             Create Sleep Event
           </Button>
         </Box>
@@ -86,7 +87,7 @@ const HomePage: React.FC = () => {
           <Heading size="md" mb={4}>
             Nap
           </Heading>
-          <Button colorScheme="teal" mt='auto' width="full" whiteSpace='normal'>
+          <Button colorScheme="teal" mt="auto" width="full" whiteSpace="normal">
             Create Nap Event
           </Button>
         </Box>
@@ -108,7 +109,7 @@ const HomePage: React.FC = () => {
           <Heading size="md" mb={4}>
             Meal
           </Heading>
-          <Button colorScheme="teal" mt='auto' width="full" whiteSpace='normal'>
+          <Button colorScheme="teal" mt="auto" width="full" whiteSpace="normal">
             Create Meal Event
           </Button>
         </Box>
@@ -129,7 +130,7 @@ const HomePage: React.FC = () => {
           <Heading size="md" mb={4}>
             Diaper Change
           </Heading>
-          <Button colorScheme="teal" mt='auto' width="full" whiteSpace='normal'>
+          <Button colorScheme="teal" mt="auto" width="full" whiteSpace="normal">
             Create Change Event
           </Button>
         </Box>

@@ -27,7 +27,7 @@ const AboutPage: React.FC = () => {
 
           <Text fontStyle="italic" mb={4}>
             Fatherhood is a voyage into uncharted territory, like a canoe ride
-            on the ocean. At Papa Honua Hou, we understand the challenges you
+            on the ocean. At Honua Hou, we understand the challenges you
             face—from adjusting to new routines. Our app is created in Hawaii to
             provide a simple and warm support system, helping you balance the
             demands of parenting with the joy it brings.
@@ -54,7 +54,7 @@ const AboutPage: React.FC = () => {
             </ListItem>
           </List>
           <Text mt={4}>
-            Join us at <b>Papa Honua Hou</b>, where we bring calm and ease to
+            Join us at <b>Honua Hou</b>, where we bring calm and ease to
             dad's world, one day at a time.
           </Text>
         </Box>
