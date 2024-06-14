@@ -6,4 +6,4 @@ The app will address the following challenges faced by new dads: adjusting to a 
 
 ## Design:
 
-<img src="./src/assets/design.png" width='800px' height='auto'>
+<img src="./client/src/assets/design.png" width='800px' height='auto'>
