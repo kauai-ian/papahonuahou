@@ -56,7 +56,7 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
     <Box>
       {statistics ? (
         <Box>
-          <Text>
+          <Text >
             Total Events (sleep, naps, meals and diapers): {statistics.totalEvents}
           </Text>
           {filter.eventTypes.includes("sleep") && (
@@ -87,7 +87,7 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
               <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
             </>
           )}
-          {filter.eventTypes.includes("daiper") && (
+          {filter.eventTypes.includes("diaper") && (
             <>
               <Text>Total Diaper Events: {statistics.totalDiaperChanges}</Text>
             </>

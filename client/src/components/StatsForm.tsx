@@ -26,7 +26,7 @@ const StatisticsForm: React.FC = () => {
     e.preventDefault();
     if (eventStart && eventEnd) {
       setQueryParams({
-        eventTypes: [],
+        eventTypes: [eventType],
         eventStart: new Date(eventStart),
         eventEnd: new Date(eventEnd),
       });
@@ -34,7 +34,7 @@ const StatisticsForm: React.FC = () => {
   };
   return (
     <Center mt={4}>
-      <Box w={["90%", "70%", "50%", "30%"]}>
+      <Box w={["100%", "100%", "100%", "70%"]}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={4}>
             <FormControl id="eventType">
@@ -70,7 +70,14 @@ const StatisticsForm: React.FC = () => {
             </Button>
           </Stack>
         </form>
-        {queryParams && <StatisticsComponent filter={queryParams} />}
+        {queryParams && (<Box
+            mt={4}
+            p={4}
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="md"
+            
+          ><StatisticsComponent filter={queryParams} /></Box>)}
       </Box>
     </Center>
   );

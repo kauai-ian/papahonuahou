@@ -16,14 +16,15 @@ const StatisticsPage: React.FC = () => {
         Statistics
       </Heading>
       <Text fontSize="lg" mb={4}>
-        Try changing the dates using the buttons
+        See your baby's activity over the past:
       </Text>
       <SummaryStatisticsComponent filter={filter} />
 
       <Box
         borderRadius="md"
         p={4}
-        boxSize="lg"
+        mt={6}
+        boxSize="50%"
         boxShadow="lg"
         bgColor=""
         alignContent="center"
