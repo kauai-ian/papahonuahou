@@ -36,6 +36,7 @@ const App: React.FC = () => {
 
   const Links = [
     { name: "Home", to: "/" },
+    { name: 'About', to: '/about'},
     { name: "Calendar", to: "/calendar"},
     { name: "History", to: "/days" },
     { name: "Statistics", to: "/statistics" },
@@ -47,7 +48,7 @@ const App: React.FC = () => {
         <Loading />
       ) : (
         <>
-          <Box bg="gray.100" px={4}>
+          <Box bg="gray.100" px={10}>
             <Flex h={24} alignItems={"center"} justifyContent={"space-between"}>
               <IconButton
                 size={"md"}
@@ -114,6 +115,22 @@ const App: React.FC = () => {
               <Route path="/about" element={<AboutPage />} />
             </Routes>
           </Box>
+          <footer>
+        <Box className="footerContainer">
+          <a
+            href="https://github.com/kauai-ian"
+            target="_blank"
+            rel="noReferrer"
+          >
+            <img
+              src="https://1000logos.net/wp-content/uploads/2021/05/GitHub-logo.png"
+              alt="github"
+              width="60px"
+            />
+            <p>Made in Hawaii by Ian Tierney</p>
+          </a>
+        </Box>
+      </footer>
         </>
       )}
     </>

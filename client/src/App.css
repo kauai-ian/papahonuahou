@@ -1,6 +1,5 @@
 #root {
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   font-family:  Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
 
@@ -22,4 +21,29 @@ nav ul {
 
 li {
   list-style-type: none;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+footer {
+  padding: 20px;
+  background-color: #EDF2F7;
+}
+
+.footerContainer a {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.footerContainer img {
+ height: 42px;
+  /* justify-content: center; */
 }

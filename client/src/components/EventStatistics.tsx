@@ -12,6 +12,7 @@ type Statistic = {
   totalMealEvents: number;
   averageSleepTime: number;
   averageNapTime: number;
+  totalDiaperChanges: number;
 };
 
 type StatisticsComponentProps = {
@@ -56,7 +57,7 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
       {statistics ? (
         <Box>
           <Text>
-            Total Events (sleep, naps and meals): {statistics.totalEvents}
+            Total Events (sleep, naps, meals and diapers): {statistics.totalEvents}
           </Text>
           {filter.eventTypes.includes("sleep") && (
             <>
@@ -84,6 +85,11 @@ const StatisticsComponent: React.FC<StatisticsComponentProps> = ({
           {filter.eventTypes.includes("meal") && (
             <>
               <Text>Total Meal Events: {statistics.totalMealEvents}</Text>
+            </>
+          )}
+          {filter.eventTypes.includes("daiper") && (
+            <>
+              <Text>Total Diaper Events: {statistics.totalDiaperChanges}</Text>
             </>
           )}
         </Box>

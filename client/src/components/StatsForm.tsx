@@ -33,7 +33,7 @@ const StatisticsForm: React.FC = () => {
     }
   };
   return (
-    <Center>
+    <Center mt={4}>
       <Box w={["90%", "70%", "50%", "30%"]}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={4}>
@@ -46,6 +46,7 @@ const StatisticsForm: React.FC = () => {
                 <option value="sleep">Sleep</option>
                 <option value="nap">Nap</option>
                 <option value="meal">Meal</option>
+                <option value="diaper">Diaper Changes</option>
               </Select>
             </FormControl>
             <FormControl id="eventStart">

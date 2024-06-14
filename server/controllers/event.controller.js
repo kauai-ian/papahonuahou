@@ -40,11 +40,14 @@ exports.createEvent = async (req, res) => {
 
     await exports.updateStatistics(day._id);
 
+const updatedDay = await Day.findById(day._id);
+
+
     return response({
       res,
       status: 201,
       message: "Event created successfully",
-      data: day,
+      data: updatedDay,
     });
   } catch (error) {
     console.error(error);
@@ -263,6 +266,7 @@ exports.getStatistics = async (req, res) => {
     let totalNapTime = 0;
     let totalNapEvents = 0;
     let totalMealEvents = 0;
+    let totalDiaperChanges = 0;
    
 
     // console.log({
@@ -283,6 +287,9 @@ exports.getStatistics = async (req, res) => {
       } else if (event.eventType === "meal") {
         totalMealEvents++;
       }
+      else if (event.eventType === "diaper") {
+        totalDiaperChanges++;
+      }
     });
 
     const averageSleepTime = totalSleepEvents > 0 ? totalSleepTime / totalSleepEvents : 0;
@@ -297,6 +304,7 @@ exports.getStatistics = async (req, res) => {
       totalMealEvents,
       averageSleepTime,
       averageNapTime,
+      totalDiaperChanges
     };
 
     return response({
@@ -328,10 +336,11 @@ exports.updateStatistics = async (dayId) => {
     let totalNapTime = 0;
     let totalNapEvents = 0;
     let totalMealEvents = 0;
+    let totalDiaperChanges = 0;
 
     day.events.forEach((event) => {
       const { eventType, eventStart, eventEnd } = event;
-      if (!["sleep", "nap", "meal"].includes(eventType)) {
+      if (!["sleep", "nap", "meal", "diaper"].includes(eventType)) {
         return response({
           res,
           status: 400,
@@ -352,6 +361,10 @@ exports.updateStatistics = async (dayId) => {
       } else if (eventType === "meal") {
         totalMealEvents++;
       }
+      else if (eventType === "diaper") {
+        totalDiaperChanges++;
+      }
+      
     });
 
     day.totalSleepTime = totalSleepTime;
@@ -359,6 +372,7 @@ exports.updateStatistics = async (dayId) => {
     day.totalNapTime = totalNapTime;
     day.totalNapEvents = totalNapEvents;
     day.totalMealEvents = totalMealEvents;
+    day.totalDiaperChanges = totalDiaperChanges
 
     await day.save();
     console.log("statistics updated successfully");

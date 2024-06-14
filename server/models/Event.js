@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-  eventType: { type: String, required: true }, // meal, sleep start, sleep end, nap start, nap end
+  eventType: { type: String, required: true }, // meal, sleep, nap, diaper
   notes: {
     type: String,
   },

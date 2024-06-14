@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Day = require('../models/Day'); 
 const Event = require('../models/Event'); 
 
-exports.cleanupDayEvents = async () => {
+const cleanupDayEvents = async () => {
   try {
     const days = await Day.find();
     const cleanupPromises = days.map(async (day) => {
@@ -29,3 +29,5 @@ console.log('Cleanup completed');
     console.error('Error during cleanup:', error);
   }
 }
+
+module.exports = cleanupDayEvents;
