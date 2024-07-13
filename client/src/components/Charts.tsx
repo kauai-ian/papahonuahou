@@ -1,53 +1,64 @@
 import { Box } from "@chakra-ui/react";
-import React from "react";
-import { AxisOptions, Chart } from "react-charts";
+import { Chart, ChartData, ChartOptions, registerables } from "chart.js";
+import "chart.js/auto";
+import { useEffect, useRef } from "react";
 
-export type SleepProps = { date: Date; sleepDuration: number };
+Chart.register(...registerables);
 
-export const MyChart: React.FC<{ data: SleepProps[] }> = ({ data }) => {
-    const series = React.useMemo(
-        () => [
-          {
-            label: "Sleep Data",
-            data: data.map((item) => ({
-              date: item.date,
-              sleepDuration: item.sleepDuration,
-            })),
+export type SleepDataPoint = {
+  date: Date;
+  sleepDuration: number;
+};
+
+const SleepTrendChart: React.FC<{ data: SleepDataPoint[] }> = ({ data }) => {
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const chartInstanceRef = useRef<Chart | null>(null);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext("2d");
+
+      if (ctx) {
+        const chartData: ChartData<"line", number[], unknown> = {
+          labels: data.map((row) => row.date.toISOString().split("T")[0]),
+          datasets: [
+            {
+              label: "Sleep duration trend",
+              data: data.map((row) => row.sleepDuration),
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        };
+
+        const chartOptions: ChartOptions<"line"> = {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
           },
-        ],
-        [data]
-      );
-  
-    const primaryAxis = React.useMemo(
-    (): AxisOptions<SleepProps> => ({
-      getValue: (datum) => datum.date,
-      scaleType: "time",
-    }),
-    []
-  );
+        };
 
-  const secondaryAxes = React.useMemo(
-    (): AxisOptions<SleepProps>[] => [
-      {
-        getValue: (datum) => datum.sleepDuration,
-        elementType: "bar",
-        scaleType: "linear",
-      },
-    ],
-    []
-  );
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+        }
 
-  
+        chartInstanceRef.current = new Chart(ctx, {
+          type: "line",
+          data: chartData,
+          options: chartOptions,
+        });
+      }
+    }
+  }, [data]);
 
   return (
-    <Box w="100%" h="400px">
-      <Chart
-        options={{
-          data: series,
-          primaryAxis,
-          secondaryAxes,
-        }}
-      />
+    <Box width="800px">
+      <canvas ref={chartRef}></canvas>
     </Box>
   );
 };
+
+export default SleepTrendChart;
