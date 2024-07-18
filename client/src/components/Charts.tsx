@@ -2,29 +2,34 @@ import { Box } from "@chakra-ui/react";
 import { Chart, ChartData, ChartOptions, registerables } from "chart.js";
 import "chart.js/auto";
 import { useEffect, useRef } from "react";
+import { useStatistics } from "../context/statsContext";
 
 Chart.register(...registerables);
 
-export type SleepDataPoint = {
-  date: Date;
-  sleepDuration: number;
-};
-
-const SleepTrendChart: React.FC<{ data: SleepDataPoint[] }> = ({ data }) => {
+const SleepTrendChart: React.FC = () => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
+  const { statistics } = useStatistics();
 
   useEffect(() => {
-    if (chartRef.current) {
-      const ctx = chartRef.current.getContext("2d");
+    if (statistics && chartRef.current) {
+      const context = chartRef.current.getContext("2d");
 
-      if (ctx) {
+      if (context && statistics.sleepEvents) {
+        const sleepData = statistics.sleepEvents.map((event) => ({
+          date: new Date(event.eventStart),
+          sleepDuration:
+            (new Date(event.eventEnd).getTime() -
+              new Date(event.eventStart).getTime()) /
+            (1000 * 60 * 60),
+        }));
+
         const chartData: ChartData<"line", number[], unknown> = {
-          labels: data.map((row) => row.date.toISOString().split("T")[0]),
+          labels: sleepData.map((row) => row.date.toISOString().split("T")[0]),
           datasets: [
             {
               label: "Sleep duration trend",
-              data: data.map((row) => row.sleepDuration),
+              data: sleepData.map((row) => row.sleepDuration),
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 1,
@@ -45,14 +50,16 @@ const SleepTrendChart: React.FC<{ data: SleepDataPoint[] }> = ({ data }) => {
           chartInstanceRef.current.destroy();
         }
 
-        chartInstanceRef.current = new Chart(ctx, {
+        chartInstanceRef.current = new Chart(context, {
           type: "line",
           data: chartData,
           options: chartOptions,
         });
       }
     }
-  }, [data]);
+  }, [statistics]);
+
+console.log("statistics data:", statistics)
 
   return (
     <Box width="800px">

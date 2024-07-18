@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   Text,
@@ -7,77 +7,16 @@ import {
   Stack,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { getStatistics } from "../api/events";
-import dayjs from "dayjs";
+
 import StatsCard from "./StatsCard";
 import { FaRunning } from "react-icons/fa";
 import { GiBabyBottle, GiNightSleep } from "react-icons/gi";
 import { ImSleepy } from "react-icons/im";
 import { MdBabyChangingStation } from "react-icons/md";
+import { useStatistics } from "../context/statsContext";
 
-type StatisticSummary = {
-  totalEvents: number;
-  totalSleepTime: number;
-  totalSleepEvents: number;
-  totalNapTime: number;
-  totalNapEvents: number;
-  totalMealEvents: number;
-  averageSleepTime: number;
-  averageNapTime: number;
-  totalDiaperChanges: number;
-};
-
-type StatisticSummaryProps = {
-  filter: {
-    eventTypes: string[];
-    eventStart: Date;
-    eventEnd: Date;
-  };
-};
-
-export const SummaryStatisticsComponent: React.FC<StatisticSummaryProps> = ({
-  filter,
-}) => {
-  const [statistics, setStatistics] = useState<StatisticSummary | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [timeRange, setTimeRange] = useState<string>("7days");
-
-  useEffect(() => {
-    const calculateDateRange = () => {
-      let eventStart: Date;
-      const eventEnd: Date = new Date();
-
-      if (timeRange === "7days") {
-        eventStart = dayjs().subtract(7, "day").toDate();
-      } else if (timeRange === "30days") {
-        eventStart = dayjs().subtract(30, "day").toDate();
-      } else {
-        eventStart = new Date("1970-01-01"); // all time
-      }
-      return { eventStart, eventEnd };
-    };
-
-    const fetchStats = async () => {
-      try {
-        const { eventStart, eventEnd } = calculateDateRange();
-        const updatedFilter = {
-          ...filter,
-          eventTypes: ["sleep", "nap", "meal", "diaper"],
-          eventStart,
-          eventEnd,
-        };
-        console.log("Fetching statistics with filter:", updatedFilter);
-        const response = await getStatistics(updatedFilter);
-        console.log("Statistics data:", response.data);
-        setStatistics(response.data);
-      } catch (error) {
-        console.error("failed to fetch stats");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, [filter, timeRange]);
+export const SummaryStatisticsComponent: React.FC = () => {
+  const { statistics, timeRange, setTimeRange, loading } = useStatistics();
 
   if (loading) {
     return <Spinner />;

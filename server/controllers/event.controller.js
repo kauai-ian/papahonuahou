@@ -267,6 +267,8 @@ exports.getStatistics = async (req, res) => {
     let totalNapEvents = 0;
     let totalMealEvents = 0;
     let totalDiaperChanges = 0;
+    let sleepEvents = [];
+    let napEvents = []
    
 
     // console.log({
@@ -281,9 +283,17 @@ exports.getStatistics = async (req, res) => {
       if (event.eventType === "sleep") {
         totalSleepTime += eventDuration;
         totalSleepEvents++;
+        sleepEvents.push({
+          eventStart: event.eventStart,
+          eventEnd: event.eventEnd
+        })
       } else if (event.eventType === "nap") {
         totalNapTime += eventDuration;
         totalNapEvents++;
+        napEvents.push({
+          eventStart: event.eventStart,
+          eventEnd: event.eventEnd
+        })
       } else if (event.eventType === "meal") {
         totalMealEvents++;
       }
@@ -304,7 +314,9 @@ exports.getStatistics = async (req, res) => {
       totalMealEvents,
       averageSleepTime,
       averageNapTime,
-      totalDiaperChanges
+      totalDiaperChanges,
+      sleepEvents,
+      napEvents
     };
 
     return response({
