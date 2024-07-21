@@ -31,7 +31,42 @@ const EventForm: React.FC<EventFormProps> = ({
   const [formState, setFormState] = useState<EventProps>({
     ...eventData,
     eventType: eventType || eventData.eventType,
+    eventStart: '',
+    eventEnd: '',
   });
+
+  // auto populate the start and end time for the sleep event at 10 hours
+  useEffect(() => {
+    const now = new Date();
+    const tenHoursLater = new Date(now.getTime() + 10 * 60 * 60 * 1000);
+
+    if (eventType === "sleep") {
+      setFormState((prevState) => ({
+        ...prevState,
+        eventStart: formatDate(now, "YYYY-MM-DTHH:mm"),
+        eventEnd: formatDate(tenHoursLater, "YYYY-MM-DTHH:mm"),
+      }));
+    } else if (eventType === "nap") { // autopopulate the start time for nap event for now and the end time to be 90 minutes from now
+      setFormState((prevState) => ({
+        ...prevState,
+        eventStart: formatDate(now, "YYYY-MM-DTHH:mm"),
+        eventEnd: formatDate(new Date(now.getTime() + 90 * 60 * 1000), "YYYY-MM-DTHH:mm"),
+      }));
+    } else if (eventType === "meal") { //autopopulate the start time for meal event for now and the end time to be 20 minutes from now
+setFormState((prevState) => ({
+        ...prevState,
+        eventStart: formatDate(now, "YYYY-MM-DTHH:mm"),
+        eventEnd: formatDate(new Date(now.getTime() + 20 * 60 * 1000), "YYYY-MM-DTHH:mm"),
+      }));
+    } else if (eventType === "diaper") { //autopopulate the start time for diaper event for now and the end time to be 5 minutes from now
+      setFormState((prevState) => ({
+        ...prevState,
+        eventStart: formatDate(now, "YYYY-MM-DTHH:mm"),
+        eventEnd: formatDate(new Date(now.getTime() + 5 * 60 * 1000), "YYYY-MM-DTHH:mm"),
+      }));
+    }
+    
+  }, [eventType]);
 
   useEffect(() => {
     if (isEditMode && eventData._id) {

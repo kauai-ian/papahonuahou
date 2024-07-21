@@ -41,15 +41,6 @@ const CalendarPage: React.FC = () => {
         onClose={onClose}
         eventType={eventType}
       />
-      
-      {/* <Box
-        mb="2"
-        w={["90%", "70%", "50%", "30%"]}
-        maxHeight="calc(100vh - 300px)"
-        overflowY="auto"
-      >
-        <DayList />
-      </Box> */}
     </Center>
   );
 };
