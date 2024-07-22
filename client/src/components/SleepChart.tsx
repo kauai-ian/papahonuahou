@@ -30,9 +30,9 @@ const SleepTrendChart: React.FC = () => {
             {
               label: "Sleep duration trend",
               data: sleepData.map((row) => row.sleepDuration),
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              backgroundColor: "rgba(75, 192, 192, 1)",
               borderColor: "rgba(75, 192, 192, 1)",
-              borderWidth: 1,
+              borderWidth: 2,
             },
           ],
         };
@@ -59,7 +59,7 @@ const SleepTrendChart: React.FC = () => {
     }
   }, [statistics]);
 
-console.log("statistics data:", statistics)
+// console.log("statistics data:", statistics)
 
   return (
     <Box width="800px">

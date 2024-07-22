@@ -1,40 +1,70 @@
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js';
+import React, { useEffect, useRef } from "react";
+import { Chart, ChartData, ChartOptions, registerables } from "chart.js";
+import "chart.js/auto";
+import { useStatistics } from "../context/statsContext";
+import { Box } from "@chakra-ui/react";
 
-const NapChart: React.FC = () => {
-    const chartRef = useRef<HTMLCanvasElement>(null);
+Chart.register(...registerables);
 
-    useEffect(() => {
-        if (chartRef.current) {
-            const ctx = chartRef.current.getContext('2d');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                        datasets: [
-                            {
-                                label: 'Nap Duration (minutes)',
-                                data: [30, 45, 60, 20, 50],
-                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            },
-                        ],
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                            },
-                        },
-                    },
-                });
-            }
+const NapTrendChart: React.FC = () => {
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const chartInstanceRef = useRef<Chart | null>(null);
+  const { statistics } = useStatistics();
+
+  useEffect(() => {
+    if (statistics && chartRef.current) {
+      const context = chartRef.current.getContext("2d");
+      if (context && statistics.napEvents) {
+        const napData = statistics.napEvents.map((event) => ({
+          date: new Date(event.eventStart),
+          napDuration:
+            (new Date(event.eventEnd).getTime() -
+              new Date(event.eventStart).getTime()) /
+            (1000 * 60 * 60),
+        }));
+
+        const chartData: ChartData<"line", number[], unknown> = {
+          labels: napData.map((row) => row.date.toISOString().split("T")[0]),
+          datasets: [
+            {
+              label: "Nap duration trend",
+              data: napData.map((row) => row.napDuration),
+              backgroundColor: "#8f4bc0",
+              borderColor: "#8f4bc0",
+              borderWidth: 2,
+            },
+          ],
+        };
+
+        const chartOptions: ChartOptions<"line"> = {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        };
+
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
         }
-    }, []);
 
-    return <canvas ref={chartRef} />;
+        chartInstanceRef.current = new Chart(context, {
+          type: "line",
+          data: chartData,
+          options: chartOptions,
+        });
+      }
+    }
+  }, [statistics]);
+
+
+  return (
+    <Box width="800px">
+      <canvas ref={chartRef}></canvas>
+    </Box>
+  );
 };
 
-export default NapChart;
+export default NapTrendChart;
 
-// TODO: update the component to be functional. and import into the StatisticsPage component.

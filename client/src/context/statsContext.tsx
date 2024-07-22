@@ -15,6 +15,7 @@ type StatisticsSummary = {
     averageNapTime: number;
     totalDiaperChanges: number;
     sleepEvents: { eventStart: string; eventEnd: string }[];
+    napEvents: { eventStart: string; eventEnd: string }[];
 }
 
 type StatisticsSummaryProps = {

@@ -2,8 +2,9 @@ import React from "react";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import StatisticsForm from "../components/StatsForm";
 import { SummaryStatisticsComponent } from "../components/SummarizeStatistics";
-import SleepTrendChart from "../components/Charts";
+import SleepTrendChart from "../components/SleepChart";
 import { StatisticsProvider } from "../context/statsContext";
+import NapTrendChart from "../components/NapChart";
 
 const StatisticsPage: React.FC = () => {
   return (
@@ -18,8 +19,29 @@ const StatisticsPage: React.FC = () => {
         <SummaryStatisticsComponent />
         <Text mt={8} fontSize="xl" letterSpacing="0.1em">
           Sleep Duration Trend
-        </Text><Box w="100%" mt={8} justifyContent="center" display="flex" boxSize="50%" boxShadow="lg">
+        </Text>
+        <Box
+          w="100%"
+          mt={8}
+          justifyContent="center"
+          display="flex"
+          boxSize="50%"
+          boxShadow="lg"
+        >
           <SleepTrendChart />
+        </Box>
+        <Text mt={8} fontSize="xl" letterSpacing="0.1em">
+          Nap Duration Trend
+        </Text>
+        <Box
+          w="100%"
+          mt={8}
+          justifyContent="center"
+          display="flex"
+          boxSize="50%"
+          boxShadow="lg"
+        >
+          <NapTrendChart />
         </Box>
         <Box
           borderRadius="md"
@@ -38,7 +60,6 @@ const StatisticsPage: React.FC = () => {
           </Text>
           <StatisticsForm />
         </Box>
-        
       </Box>
     </StatisticsProvider>
   );
