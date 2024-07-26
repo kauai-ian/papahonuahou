@@ -13,7 +13,7 @@ import { formatDate } from "../utils/dateUtils";
 import EventList from "./EventList";
 import { useDays } from "../hooks/useDays";
 import { DayProps } from "../context/daysContext";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useEvents from "../hooks/useEvents";
 import calculateDuration from "../utils/duration";
 import { capitalizeFirstLetter } from "../utils/capFirstLtr";
@@ -39,14 +39,14 @@ const DayList = () => {
     );
   }, [days]);
 
-  useEffect(() => {
-    // TODO: not working. selects the current day if its in the list of days
-    const today = new Date().toISOString().split("T")[0];
-    const currentDay = days.find((day) => day.dayStart === today);
-    if (currentDay) {
-      selectDay(currentDay);
-    }
-  }, [days, selectDay]);
+  // useEffect(() => {
+  //   // TODO: not working. selects the current day if its in the list of days
+  //   const today = new Date().toISOString().split("T")[0];
+  //   const currentDay = days.find((day) => day.dayStart === today);
+  //   if (currentDay) {
+  //     selectDay(currentDay);
+  //   }
+  // }, [days, selectDay]);
 
   console.log(selectedDay);
   return (
@@ -78,15 +78,30 @@ const DayList = () => {
             </Text>
             {dayEvents.length > 0 && (
               <Box mt={2}>
-                {/* <Text fontSize="sm">Events: </Text> */}
                 {dayEvents.map((event) => (
-                  <Box key={event._id} display="flex" gap="2rem">
-                    <Box borderRight="1px" borderColor="gray.300" pr={8}>
+                  <Box
+                    key={event._id}
+                    display="flex"
+                    gap="2rem"
+                    border={"1px"}
+                    borderColor="blue.200"
+                  >
+                    <Box
+                      borderRight="1px"
+                      borderColor="gray.300"
+                      pr={8}
+                      w={"95px"}
+                    >
                       <Text fontSize="sm" color="teal">
                         {formatDate(event.eventStart, "h:mm A")}
                       </Text>
                     </Box>
-                    <Box borderRight="1px" borderColor="gray.300" pr={8}>
+                    <Box
+                      borderRight="1px"
+                      borderColor="gray.300"
+                      pr={8}
+                      w={"95px"}
+                    >
                       <Text fontSize="sm">
                         {capitalizeFirstLetter(event.eventType)}
                       </Text>

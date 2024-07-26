@@ -29,7 +29,7 @@ import ProfilePage from "./pages/Profile";
 import LogoutPage from "./pages/Logout";
 import HomePage from "./pages/Home";
 import AboutPage from "./pages/About";
-import ColorModeToggleButton from "./components/useColorMode";
+import ColorModeToggleButton from "./hooks/useColorMode";
 import { useColorModeValue } from "@chakra-ui/react";
 
 const App: React.FC = () => {
