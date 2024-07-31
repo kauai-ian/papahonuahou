@@ -6,7 +6,8 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
-const routes = require("../routes/event.routes");
+const eventRouter = require("../routes/event.routes");
+const userRouter = require("../routes/user.routes");
 
 const port = process.env.PORT || 3000;
 
@@ -32,7 +33,8 @@ app.set("port", port);
 
 const server = http.createServer(app);
 
-app.use("/api", routes);
+app.use("/api", eventRouter);
+app.use("/api/user", userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
