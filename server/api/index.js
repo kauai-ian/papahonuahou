@@ -8,8 +8,23 @@ const http = require("http");
 const cors = require("cors");
 const eventRouter = require("../routes/event.routes");
 const userRouter = require("../routes/user.routes");
+// const { auth } = require("express-oauth2-jwt-bearer");
 
+const app = express();
 const port = process.env.PORT || 3000;
+
+//authorization middleware when used, the access token must exist and be verified against the Auth0 JWKS
+// app.use(
+//   auth({
+//   authRequired: false,
+//   auth0Logout: true,
+//   secret: process.env.AUTH0_SECRET,
+//   baseURL: "http://localhost:3000",
+//   clientID: process.env.AUTH0_CLIENTID,
+//   issuerBaseURL: process.env.AUTH0_BASEURL,
+// })
+// );
+// console.log(configAuth);
 
 // connect to db
 mongoose
@@ -22,7 +37,6 @@ mongoose
     console.error("error connecting with mongoDB", error);
   });
 
-const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());

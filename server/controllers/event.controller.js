@@ -12,6 +12,7 @@ exports.createEvent = async (req, res) => {
       throw new Error("request body is missing");
     }
     const { eventType, notes, eventStart, eventEnd, _id } = req.body;
+    const userId = req.user.sub;
     if (!eventType || !eventStart || !eventEnd) {
       statusCode = 400;
       throw new Error("Missing required fields");
@@ -31,6 +32,7 @@ exports.createEvent = async (req, res) => {
       eventStart,
       eventEnd,
       dayId: day._id,
+      user: userId,
     });
     await newEvent.save();
     console.log("new event created:", newEvent);

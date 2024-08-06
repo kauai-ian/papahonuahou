@@ -1,4 +1,4 @@
-// form compoent for creating and editing events
+// form component for creating and editing events
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -13,6 +13,7 @@ import { EventProps, eventInitState } from "../context/eventsContext";
 import { formatDate, parseDate } from "../utils/dateUtils";
 import useEvents from "../hooks/useEvents";
 import { capitalizeFirstLetter } from "../utils/capFirstLtr";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type EventFormProps = {
   isEditMode?: boolean;
@@ -27,12 +28,24 @@ const EventForm: React.FC<EventFormProps> = ({
   eventType = "",
   onCancel,
 }) => {
+  const { user } = useAuth0();
   const { createEvent, editEvent, isLoading } = useEvents();
   const [formState, setFormState] = useState<EventProps>({
     ...eventData,
     eventType: eventType || eventData.eventType,
     eventStart: '',
-    eventEnd: '',
+    eventEnd: '', 
+    user: user ? {
+      _id: user.sub || "",
+      email: user.email || "",
+      name: user.name || "",
+      displayName: user.nickname || "",
+    } : {
+      _id: "",
+      email: "",
+      name: "",
+      displayName: "",
+    },
   });
 
   // auto populate the start and end time for the sleep event at 10 hours
@@ -113,6 +126,11 @@ setFormState((prevState) => ({
       console.error("Error submitting event data", error);
     }
   };
+
+  // reset form fields
+  // const resetForm = () => {
+  //   setFormState(eventInitState);
+  // };
 
   return (
     <>

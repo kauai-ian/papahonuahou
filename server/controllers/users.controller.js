@@ -57,7 +57,19 @@ exports.getUserById = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, sub, displayName } = req.body;
+    const { name, email, sub, displayName, picture } = req.body;
+    // existing user
+    const existingUser = await User.findOne({ sub
+    });
+    if (existingUser) {
+      return response({
+        res,
+        status: 409,
+        message: "User already exists",
+        data: existingUser,
+      });
+    }    
+    
     const newUser = new User({ name, email, sub, displayName });
     await newUser.save();
     return response({

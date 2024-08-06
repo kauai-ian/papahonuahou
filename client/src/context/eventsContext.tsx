@@ -8,6 +8,12 @@ export type EventProps = {
   notes: string;
   eventStart: string;
   eventEnd: string;
+  user: {
+    _id: string;
+    email: string;
+    name: string;
+    displayName: string;
+  };
 };
 
 export const eventInitState: EventProps = {
@@ -16,6 +22,12 @@ export const eventInitState: EventProps = {
   notes: "",
   eventStart: "",
   eventEnd: "",
+  user: {
+    _id: "",
+    email: "",
+    name: "",
+    displayName: "",
+  },
 };
 
 export type EventsContextType = {
@@ -62,7 +74,7 @@ const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     fetchEvents();
   }, []);
 
-  const createEvent = async (newEvent: EventProps) => {
+  const createEvent = async (newEvent: EventProps)=> {
     try {
       const createdEvent = await api.createEvent(newEvent);
       setEvents((prev) => [...prev, createdEvent]);
