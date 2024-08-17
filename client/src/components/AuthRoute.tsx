@@ -12,7 +12,7 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  return <>{children}</>;
+  return children;
 };
 
 export default AuthRoute;

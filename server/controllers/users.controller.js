@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const response = require("../helpers/response");
 
+
 exports.listUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -59,8 +60,7 @@ exports.createUser = async (req, res) => {
   try {
     const { name, email, sub, displayName, picture } = req.body;
     // existing user
-    const existingUser = await User.findOne({ sub
-    });
+    const existingUser = await User.findOne({ sub });
     if (existingUser) {
       return response({
         res,
@@ -68,8 +68,8 @@ exports.createUser = async (req, res) => {
         message: "User already exists",
         data: existingUser,
       });
-    }    
-    
+    }
+
     const newUser = new User({ name, email, sub, displayName });
     await newUser.save();
     return response({
@@ -152,7 +152,6 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
-
 
 // TODO: Implement the following functions:
 // - addConnection

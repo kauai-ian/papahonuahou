@@ -3,6 +3,19 @@ import axios from "axios";
 const ROOT = import.meta.env.VITE_ROOT;
 import { User } from "@auth0/auth0-react";
 
+
+// // add authentication to the api calls
+// axios.interceptors.request.use(
+//   (config) => {
+//     const token = // TODO: get the access token from Auth0
+//     config.headers.Authorization = `Bearer ${token}`; // success callback
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 // create a new user
 export const createUser = async (data: User) => {
   const response = await axios.post(`${ROOT}/users`, data);

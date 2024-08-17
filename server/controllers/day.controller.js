@@ -1,7 +1,6 @@
 const Day = require('../models/Day');
 const response = require('../helpers/response');
 
-
 exports.listDays = async (req, res) => {
     try {
       const days = await Day.find().sort({ dayStart: -1 });

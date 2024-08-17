@@ -4,6 +4,7 @@ const response = require("../helpers/response");
 const getMidnightDate = require("../helpers/getMidnight");
 const { cleanupDayEvents } = require("../helpers/cleanupDayEvents");
 
+
 exports.createEvent = async (req, res) => {
   let statusCode = 200;
   try {
